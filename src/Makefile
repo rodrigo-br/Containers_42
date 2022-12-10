@@ -39,4 +39,4 @@ $(TEST):
 
 test:	$(TEST)
 		c++ $(TEST_SRC) $(TEST) -o ../tests/capivarinha
-		../tests/capivarinha ${TEST_FLAG}
+		valgrind ../tests/capivarinha ${TEST_FLAG}

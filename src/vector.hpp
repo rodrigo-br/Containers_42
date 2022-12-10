@@ -71,21 +71,20 @@ namespace ft {
 			return _data[index];
 		};
 
-	private:
+		void reserve(size_type new_cap) {
+			if (new_cap > max_size()) { throw std::length_error(""); }
+			if (new_cap <= _capacity) { return ; }
 
-		// void reserve( size_type new_cap ) {
-		// 	if (new_cap > max_size()) { throw std::length_error; }
-		// 	if (new_cap <= _capacity) { return ; }
+			value_type *newData;
+			newData = _alloc.allocate(new_cap);
+			for (size_type i = 0; i < _size; i++) {
+				_alloc.construct(&newData[i], _data[i]);
+			}
+			_alloc.deallocate(_data, _capacity);
+			_data = newData;
+			_capacity = new_cap;
+		};
 
-		// 	value_type newData = _alloc.allocate(new_cap);
-		// 	for (size_type i = 0; i < new_cap; i++) {
-		// 		_alloc.construct(&newData[i], _data[i]);
-		// 	}
-		// 	//destruir o data
-		// 	_data = newData;
-		// 	_capacity = new_cap;
-
-		// };
 	};
 };
 

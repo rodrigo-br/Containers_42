@@ -42,6 +42,9 @@ TEST_CASE ("Passando array de String first e last no constructor") {
 		std::vector<std::string> v2(std::begin(cavalinho), std::end(cavalinho));
 
 		compare(v, v2);
+		v.reserve(10);
+		v2.reserve(10);
+		compare(v, v2);
 }
 
 TEST_CASE ("Passando array de int first e last no constructor") {
