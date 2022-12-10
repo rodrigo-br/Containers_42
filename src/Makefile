@@ -1,11 +1,21 @@
 SRCS	=	$(shell ls ./ | grep .cpp$)
 
+TEST	=	../tests/cavalinho.o
+
+TEST_SRC	=	$(addprefix ../tests/, $(shell ls ../tests/ | grep tests_*))
+
 OBJS	=	$(SRCS:.cpp=.o)
 
 NAME	=	containers
 
 CC 		=	c++
 CFLAGS	=	-g3 -Wall -Wextra -Werror -Wshadow -std=c++98
+
+TEST_FLAG = -r compact
+
+ifdef V
+	TEST_FLAG += -s
+endif
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -24,5 +34,9 @@ fclean:		clean
 
 re:			fclean all
 
-test:	re
-		valgrind --leak-check=full --show-leak-kinds=all --log-file="leaks.txt" ./$(NAME)
+$(TEST):
+		c++ -c ../tests/main_t.cpp $< -o $(TEST)
+
+test:	$(TEST)
+		c++ $(TEST_SRC) $(TEST) -o ../tests/capivarinha
+		../tests/capivarinha ${TEST_FLAG}
