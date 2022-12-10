@@ -30,6 +30,10 @@ namespace ft {
 
 	public:
 
+/******************************************************************************/
+/*					Constructors & Destructor							      */
+/******************************************************************************/
+
 		explicit vector(const allocator_type &alloc = allocator_type()) :
 			_alloc(alloc), _size(0), _capacity(0), _data(NULL) {};
 
@@ -55,13 +59,9 @@ namespace ft {
 
 		~vector() { _alloc.deallocate(_data, _capacity); };
 
-		size_type size(void) const { return _size; };
-
-		size_type capacity(void) const { return _capacity; };
-
-		size_type max_size(void) const { return _alloc.max_size(); };
-
-		bool empty(void) const { return static_cast<bool>(!_size); };
+/******************************************************************************/
+/*								Operators								      */
+/******************************************************************************/
 
 		const_reference operator[](size_type index) const {
 			return _data[index];
@@ -71,10 +71,20 @@ namespace ft {
 			return _data[index];
 		};
 
+		template<value_type, Allocator>
+		bool operator==(const ft::vector<value_type,Allocator>& lhs, const ft::vector<value_type,Allocator>& rhs) {
+			if (lhs.size() != rhs.size())
+				return (false);
+			return (true);
+		}
+
+/******************************************************************************/
+/*								Capacity								      */
+/******************************************************************************/
+
 		void reserve(size_type new_cap) {
 			if (new_cap > max_size()) { throw std::length_error(""); }
 			if (new_cap <= _capacity) { return ; }
-
 			value_type *newData;
 			newData = _alloc.allocate(new_cap);
 			for (size_type i = 0; i < _size; i++) {
@@ -84,6 +94,22 @@ namespace ft {
 			_data = newData;
 			_capacity = new_cap;
 		};
+
+		size_type size(void) const { return _size; };
+
+		size_type capacity(void) const { return _capacity; };
+
+		size_type max_size(void) const { return _alloc.max_size(); };
+
+		bool empty(void) const { return static_cast<bool>(!_size); };
+
+		void shrink_to_fit(void) {
+			_capacity = _size;
+		};
+
+/******************************************************************************/
+/*								Modifiers								      */
+/******************************************************************************/
 
 	};
 };
