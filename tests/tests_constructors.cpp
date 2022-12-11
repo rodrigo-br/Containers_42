@@ -39,7 +39,7 @@ void compare(ft::vector<T> &v1, std::vector<T> &v2) {
 	v2.shrink_to_fit();
 	v1.shrink_to_fit();
 	REQUIRE(v2.capacity() == v1.capacity());
-	//REQUIRE(true, (v1 == v1));
+	REQUIRE(v2.get_allocator() == v1.get_allocator());
 }
 
 TEST_CASE ("Passando array de String first e last no constructor") {
@@ -51,24 +51,24 @@ TEST_CASE ("Passando array de String first e last no constructor") {
 		compare(v, v2);
 }
 
-// TEST_CASE ("Passando array de int first e last no constructor") {
-// 		int cavalinho[] = {1, 2, 3, 4, 5};
-// 		ft::vector<int> v(std::begin(cavalinho), std::end(cavalinho));
-// 		std::vector<int> v2(std::begin(cavalinho), std::end(cavalinho));
+TEST_CASE ("Passando array de int first e last no constructor") {
+		int cavalinho[] = {1, 2, 3, 4, 5};
+		ft::vector<int> v(std::begin(cavalinho), std::end(cavalinho));
+		std::vector<int> v2(std::begin(cavalinho), std::end(cavalinho));
 
-// 		compare(v, v2);
-// }
+		compare(v, v2);
+}
 
-// TEST_CASE ("Passando <int> size 5 no constructor") {
-// 		ft::vector<int> v(5);
-// 		std::vector<int> v2(5);
+TEST_CASE ("Passando <int> size 5 no constructor") {
+		ft::vector<int> v(5);
+		std::vector<int> v2(5);
 
-// 		compare(v, v2);
-// }
+		compare(v, v2);
+}
 
-// TEST_CASE ("Passando int no constructor vazio") {
-// 		ft::vector<int> v;
-// 		std::vector<int> v2;
+TEST_CASE ("Passando int no constructor vazio") {
+		ft::vector<int> v;
+		std::vector<int> v2;
 
-// 		compare(v, v2);
-// }
+		compare(v, v2);
+}
