@@ -63,6 +63,10 @@ namespace ft {
 /*								Operators								      */
 /******************************************************************************/
 
+		vector& operator=( const vector& other ) {
+
+		};
+
 		const_reference operator[](size_type index) const {
 			return _data[index];
 		};
@@ -71,12 +75,13 @@ namespace ft {
 			return _data[index];
 		};
 
-		template<value_type, Allocator>
-		bool operator==(const ft::vector<value_type,Allocator>& lhs, const ft::vector<value_type,Allocator>& rhs) {
-			if (lhs.size() != rhs.size())
-				return (false);
-			return (true);
-		}
+
+		// template<value_type, Allocator>
+		// bool operator==(const ft::vector<value_type,Allocator>& lhs, const ft::vector<value_type,Allocator>& rhs) {
+		// 	if (lhs.size() != rhs.size())
+		// 		return (false);
+		// 	return (true);
+		// }
 
 /******************************************************************************/
 /*								Capacity								      */
@@ -111,6 +116,8 @@ namespace ft {
 /*								Modifiers								      */
 /******************************************************************************/
 
+	
+	allocator_type get_allocator() const { return _alloc; };
 	};
 };
 
