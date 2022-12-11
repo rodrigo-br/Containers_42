@@ -156,6 +156,31 @@ namespace ft {
 
 		allocator_type get_allocator(void) const { return _alloc; };
 
+/******************************************************************************/
+/*								Element access								  */
+/******************************************************************************/
+
+		reference at (size_type n) { return _data[n]; };
+
+		const_reference at (size_type n) const { return _data[n]; };
+
+		reference front(void) { return _data[0]; };
+		
+		const_reference front(void) const { return _data[0]; };
+
+		reference back(void) { return _data[_size - 1]; };
+		
+		const_reference back(void) const { return _data[_size - 1]; };
+
+		value_type* data(void) noexcept { return _data; };
+		
+		const value_type* data(void) const noexcept { return _data; };
+
+/******************************************************************************/
+/*								Iterators								      */
+/******************************************************************************/
+
+
 	};
 };
 
