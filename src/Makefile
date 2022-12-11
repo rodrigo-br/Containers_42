@@ -39,4 +39,4 @@ $(TEST):
 
 test:	$(TEST)
 		c++ $(TEST_SRC) $(TEST) -o ../tests/capivarinha
-		valgrind ../tests/capivarinha ${TEST_FLAG}
+		valgrind --leak-check=full --show-leak-kinds=all --log-file="leaks.txt" ../tests/capivarinha ${TEST_FLAG}

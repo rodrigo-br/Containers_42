@@ -63,8 +63,17 @@ namespace ft {
 /*								Operators								      */
 /******************************************************************************/
 
-		vector& operator=( const vector& other ) {
-
+		vector& operator=(const vector& other) {
+			this->clear();
+			_alloc = other.get_allocator();
+			_alloc.deallocate(_data, _capacity);
+			_size = other.size();
+			_capacity = other.capacity();
+			_data = _alloc.allocate(_capacity);
+			for (size_type i = 0; i < _size; i++) {
+				_alloc.construct(&_data[i], other[i]);
+			}
+			return *this;
 		};
 
 		const_reference operator[](size_type index) const {
@@ -116,8 +125,13 @@ namespace ft {
 /*								Modifiers								      */
 /******************************************************************************/
 
-	
-	allocator_type get_allocator() const { return _alloc; };
+	allocator_type get_allocator(void) const { return _alloc; };
+
+	void clear(void) {
+		_alloc.destroy(_data);
+		_size = 0;
+	};
+
 	};
 };
 
