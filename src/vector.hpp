@@ -84,7 +84,6 @@ namespace ft {
 			return _data[index];
 		};
 
-
 		// template<value_type, Allocator>
 		// bool operator==(const ft::vector<value_type,Allocator>& lhs, const ft::vector<value_type,Allocator>& rhs) {
 		// 	if (lhs.size() != rhs.size())
@@ -121,16 +120,41 @@ namespace ft {
 			_capacity = _size;
 		};
 
+		void resize (size_type n, value_type val = value_type()) {
+			value_type *newData;
+			newData = _alloc.allocate(n);
+			size_type max_size = n > _size ? _size : n;
+			_size = 0;
+			for (size_type i = 0; i < max_size; i++) {
+				_alloc.construct(&newData[i], _data[i]);
+				_size++;
+			}
+			if (_size < n) {
+				for (size_type i = _size; i < n; i++) {
+					_alloc.construct(&newData[i], val);
+					_size++;
+				}
+			}
+			_alloc.deallocate(_data, _capacity);
+			_data = newData;
+			if (n > _capacity)
+				_capacity = n;
+		};
+
 /******************************************************************************/
 /*								Modifiers								      */
 /******************************************************************************/
 
-	allocator_type get_allocator(void) const { return _alloc; };
+		void clear(void) {
+			_alloc.destroy(_data);
+			_size = 0;
+		};
 
-	void clear(void) {
-		_alloc.destroy(_data);
-		_size = 0;
-	};
+/******************************************************************************/
+/*								Allocator								      */
+/******************************************************************************/
+
+		allocator_type get_allocator(void) const { return _alloc; };
 
 	};
 };

@@ -1,6 +1,4 @@
-#include "catch.hpp"
-#include "../src/vector.hpp"
-#include <vector>
+#include "tests.hpp"
 
 TEST_CASE ("Testando operator= com vector vazio") {
 	ft::vector<int> x(5);

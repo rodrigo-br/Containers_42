@@ -14,7 +14,7 @@ CFLAGS	=	-g3 -Wall -Wextra -Werror -Wshadow -std=c++98
 TEST_FLAG = -r compact
 
 ifdef V
-	TEST_FLAG += -s
+	TEST_FLAG += -s -d yes
 endif
 
 %.o: %.cpp
