@@ -1,7 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 #include <stdexcept>
-#include <iostream>
 
 namespace ft {
 	template<class T, class Allocator = std::allocator<T> >
@@ -172,9 +171,9 @@ namespace ft {
 		
 		const_reference back(void) const { return _data[_size - 1]; };
 
-		value_type* data(void) noexcept { return _data; };
+		value_type* data(void) { return _data; };
 		
-		const value_type* data(void) const noexcept { return _data; };
+		const value_type* data(void) const { return _data; };
 
 /******************************************************************************/
 /*								Iterators								      */
