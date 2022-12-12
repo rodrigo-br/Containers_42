@@ -3,7 +3,10 @@
 
 #include "catch.hpp"
 #include "../src/vector.hpp"
+// #include "../src/reverse_iterator.hpp"
+// #include "../src/iterator_traits.hpp"
 #include <vector>
+#include <iostream>
 
 void print_line(void);
 

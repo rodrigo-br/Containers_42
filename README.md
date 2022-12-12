@@ -11,19 +11,19 @@ In this project, i implement the following container types of the C++ standard t
 
 Also:
 
-- std::iterator_traits
+- [std::iterator_traits](https://cplusplus.com/reference/iterator/iterator_traits/)
 
-- std::reverse_iterator
+- [std::reverse_iterator](https://cplusplus.com/reference/iterator/reverse_iterator/)
 
-- std::enable_if
+- [std::enable_if](https://cplusplus.com/reference/type_traits/enable_if/)
 
-- std::is_integral
+- [std::is_integral](https://cplusplus.com/reference/type_traits/is_integral/)
 
-- std::equal and std::lexicographical_compare
+- [std::equal](https://cplusplus.com/reference/algorithm/equal/) and [std::lexicographical_compare](https://cplusplus.com/reference/algorithm/lexicographical_compare/)
 
-- std::pair
+- [std::pair](https://cplusplus.com/reference/utility/pair/)
 
-- std::make_pair
+- [std::make_pair](https://cplusplus.com/reference/utility/make_pair/)
 
 
 ## Tests
