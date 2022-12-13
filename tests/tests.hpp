@@ -3,12 +3,27 @@
 
 #include "catch.hpp"
 #include "../src/vector.hpp"
-// #include "../src/reverse_iterator.hpp"
-// #include "../src/iterator_traits.hpp"
+#include "../src/reverse_iterator.hpp"
+#include "../src/iterator_traits.hpp"
 #include <vector>
 #include <iostream>
+#include <iterator>     // std::iterator, std::input_iterator_tag
+#include <typeinfo>     // typeid
 
 void print_line(void);
+
+class MyIterator : public std::iterator<std::input_iterator_tag, int>
+{
+  int* p;
+public:
+  MyIterator(int* x) :p(x) {}
+  MyIterator(const MyIterator& mit) : p(mit.p) {}
+  MyIterator& operator++() {++p;return *this;}
+  MyIterator operator++(int) {MyIterator tmp(*this); operator++(); return tmp;}
+  bool operator==(const MyIterator& rhs) const {return p==rhs.p;}
+  bool operator!=(const MyIterator& rhs) const {return p!=rhs.p;}
+  int& operator*() {return *p;}
+};
 
 template<typename T>
 void print_vector(ft::vector<T> &v) {
