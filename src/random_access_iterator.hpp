@@ -41,21 +41,21 @@ namespace ft {
 			pointer base(void) const { return _ptr; };
 
 /******************************************************************************/
-/*					Operators							      */
+/*					Operators							     				  */
 /******************************************************************************/
 
 			random_access_iterator &operator=(const random_access_iterator &rhs) {
 				_ptr = rhs._ptr;
 				return *this;
-			}
+			};
 
 			bool operator==(const random_access_iterator &rhs) const {
 				return _ptr == rhs.base();
-			}
+			};
 
 			bool operator!=(const random_access_iterator &rhs) const {
 				return _ptr != rhs.base();
-			}
+			};
 
 			reference operator*(void) const { return *_ptr; };
 
@@ -82,38 +82,65 @@ namespace ft {
 				--_ptr;
 				return *tmp;
 			};
+			
+			random_access_iterator operator+(difference_type n) const {
+				return random_access_iterator(_ptr + n);
+			};
 
-			/*
+			random_access_iterator operator-(difference_type n) const {
+				return random_access_iterator(_ptr - n);
+			};
 
-For mutable iterators (non-constant iterators):
-Can be dereferenced as an lvalue (if in a dereferenceable state).	*a = t
-Can be incremented (if in a dereferenceable state).
-The result is either also dereferenceable or a past-the-end iterator.
-Two iterators that compare equal, keep comparing equal after being both increased.
-++a
-a++
-*a++
-Can be decremented (if a dereferenceable iterator value precedes it).
---a
-a--
-*a--
-Supports the arithmetic operators + and - between an iterator and an integer value,
- or subtracting an iterator from another.	a + n
-n + a
-a - n
-a - b
-Can be compared with inequality relational operators (<, >, <= and >=).	a < b
-a > b
-a <= b
-a >= b
-Supports compound assignment operations += and -=	a += n
-a -= n
-Supports the offset dereference operator ([])	a[n]
+			random_access_iterator &operator+=(difference_type n) {
+				_ptr += n;
+				return *this;
+			};
 
-Where X is a random-access iterator type, a and b are objects of this iterator type,
- n is a value of its difference type, and t is an object of the type pointed by
-  the iterator type (or some other type that can be assigned to the lvalue
-   returned by dereferencing an object of type X).*/
+			random_access_iterator &operator-=(difference_type n) {
+				_ptr -= n;
+				return *this;
+			};
+
+			bool operator<(const random_access_iterator &rhs) const {
+				return _ptr < rhs.base();
+			};
+
+			bool operator<=(const random_access_iterator &rhs) const {
+				return _ptr <= rhs.base();
+			};
+
+			bool operator>(const random_access_iterator &rhs) const {
+				return _ptr > rhs.base();
+			};
+
+			bool operator>=(const random_access_iterator &rhs) const {
+				return _ptr >= rhs.base();
+			};
+
+			reference operator[](difference_type n) const {
+				return _ptr[n];
+			};
+
+			iterator operator+(int rhs) {
+				return (iterator(_ptr + rhs));
+			}
+
+			iterator operator-(int rhs) {
+				return (iterator(_ptr - rhs));
+			}
+
+			int operator+(const iterator& rhs) {
+				return (_ptr + rhs._ptr);
+			}
+
+			int operator-(const iterator& rhs) {
+				return (_ptr - rhs._ptr);
+			}
+
+			template<typename It>
+			operator random_access_iterator<It>() const {
+				return random_access_iterator<It>(_ptr);
+			};
 
 	};
 };
