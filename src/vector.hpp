@@ -18,8 +18,9 @@ namespace ft {
 		typedef typename allocator_type::const_reference		const_reference;
 		typedef typename allocator_type::pointer				pointer;
 		typedef typename allocator_type::const_pointer			const_pointer;
-		typedef typename ft::random_access_iterator<pointer>	iterator;
-		typedef typename ft::random_access_iterator<const_pointer>	const_iterator;
+		typedef typename ft::random_access_iterator<value_type>	iterator;
+		typedef
+		typename ft::random_access_iterator<const value_type>	const_iterator;
 		// typedef ft::reverse_iterator<iterator>				reverse_iterator;
 		// typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 
@@ -181,13 +182,13 @@ namespace ft {
 /*								Iterators								      */
 /******************************************************************************/
 
-		iterator begin() { return iterator(_data[0]); };
+		iterator begin() { return iterator(_data); };
 
-		const_iterator begin() const { return iterator(_data[0]); };
+		const_iterator begin() const { return iterator(_data); };
 
-		iterator end() { return iterator(_data[_size]); };
+		iterator end() { return iterator(_data + _size); };
 
-		const_iterator end() const { return iterator(_data[_size]); };
+		const_iterator end() const { return iterator(_data + _size); };
 	};
 };
 

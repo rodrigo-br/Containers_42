@@ -11,7 +11,7 @@ namespace ft {
 		typedef typename Iterator::iterator_category		iterator_category;
 	};
 	
-	template <class T> class iterator_traits<T*> {
+	template <typename T> class iterator_traits<T*> {
 		public:
 		typedef typename std::ptrdiff_t						difference_type;
 		typedef T											value_type;
