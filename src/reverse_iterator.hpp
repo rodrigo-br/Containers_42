@@ -113,7 +113,7 @@ template <typename Iterator> class reverse_iterator : public std::iterator
 			static Tp *s_to_pointer(Tp* p) { return p; };
 
 			template<typename Tp>
-			static pointer s_to_pointer(Tp t) { t.operator->(); };
+			static pointer s_to_pointer(Tp t) { return t.operator->(); };
 
 	};
 
