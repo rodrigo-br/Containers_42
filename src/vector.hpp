@@ -152,6 +152,24 @@ namespace ft {
 			_size = 0;
 		};
 
+		void push_back(const value_type& val) {
+			if (_size + 1 > _capacity) {
+				_capacity ? _capacity *= 2 : _capacity++;
+				pointer tmp = _alloc.allocate(_capacity);
+				if (tmp == NULL) {
+					throw std::bad_alloc();
+				}
+				for (size_t i = 0; i < _size; i++) {
+					_alloc.construct(tmp + i, _data[i]);
+					_alloc.destroy(_data + i);
+				}
+				_alloc.deallocate(_data, _capacity);
+				_data = tmp;
+			}
+			_alloc.construct(_data + _size, val);
+			_size++;
+		}
+
 /******************************************************************************/
 /*								Allocator								      */
 /******************************************************************************/
@@ -190,15 +208,15 @@ namespace ft {
 
 		const_iterator end() const { return iterator(_data + _size); };
 
-		reverse_iterator rbegin(void) {	return reverse_iterator(--this->end()); };
+		reverse_iterator rbegin(void) {	return reverse_iterator(end()); };
 
-		const_reverse_iterator rbegin(void) const {	return const_reverse_iterator(--this->end()); };
+		const_reverse_iterator rbegin(void) const {	return const_reverse_iterator(end()); };
 
-		reverse_iterator rend(void) {	return reverse_iterator(--this->begin()); };
+		reverse_iterator rend(void) {	return reverse_iterator(begin()); };
 
-		const_reverse_iterator rend(void) const {	return const_reverse_iterator(--this->begin()); };
+		const_reverse_iterator rend(void) const {	return const_reverse_iterator(begin()); };
 	};
-};
+};//namespace ft
 
 
 #endif

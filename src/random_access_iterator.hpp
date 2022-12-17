@@ -210,6 +210,6 @@ namespace ft {
 	{
 		return lhs.base() >= rhs.base();
 	};
-};
+};//namespace ft
 
 #endif
