@@ -165,8 +165,41 @@ namespace ft {
 			if (_size == 0)
 				return ;
 			_size--;
-			_alloc.destroy(_data + _size);
+			_alloc.destroy(&_data[_size]);
 		};
+
+		template <class Iterator>
+		void assign(Iterator first, Iterator last) {
+			while (first != last) {
+				if (_size + 1 > _capacity) {
+					reserve((_capacity * 2 < max_size() ? _capacity * 2 : max_size()));
+				}
+				return ;
+			}
+		};
+
+		iterator erase (iterator position) {
+			iterator return_iterator = position;
+			iterator copy_iterator = position;
+			size_type i = 0;
+			for (; i < _size; i++) {
+				if (copy_iterator == position) {
+					_alloc.destroy(&_data[i]);
+					break ;
+				}
+			}
+			if (i < _size) {
+				while (copy_iterator != (end() - 1)) {
+					position++;
+					*copy_iterator = *position;
+					copy_iterator++;
+				}
+				_size--;
+			}
+			return return_iterator;
+		}
+		
+		iterator erase (iterator first, iterator last);
 
 /******************************************************************************/
 /*								Allocator								      */
