@@ -153,20 +153,11 @@ namespace ft {
 		};
 
 		void push_back(const value_type& val) {
-			if (_size + 1 > _capacity) {
-				_capacity ? _capacity *= 2 : _capacity++;
-				pointer tmp = _alloc.allocate(_capacity);
-				if (tmp == NULL) {
-					throw std::bad_alloc();
-				}
-				for (size_t i = 0; i < _size; i++) {
-					_alloc.construct(tmp + i, _data[i]);
-					_alloc.destroy(_data + i);
-				}
-				_alloc.deallocate(_data, _capacity);
-				_data = tmp;
+			if (_capacity == 0) { reserve(1); }
+			else if (_size + 1 > _capacity) {
+				reserve((_capacity * 2 < max_size() ? _capacity * 2 : max_size()));
 			}
-			_alloc.construct(_data + _size, val);
+			_alloc.construct(&_data[_size], val);
 			_size++;
 		}
 
