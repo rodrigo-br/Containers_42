@@ -9,6 +9,7 @@ namespace ft {
 			first1++;
 			first2++;
 		}
+		return true;
 	};
 
 	template <class Iterator1, class Iterator2, class BinaryPredicate>
@@ -18,6 +19,7 @@ namespace ft {
 			first1++;
 			first2++;
 		}
+		return true;
 	};
 
 }; //namespace ft
