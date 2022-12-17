@@ -79,3 +79,14 @@ TEST_CASE("Teste Push back com _capacity 0 e _size + 1 > _capacity") {
 		REQUIRE(i * 5 == v1[i]);
 	}
 }
+
+TEST_CASE("Teste Pop") {
+	ft::vector<int> v1;
+	v1.push_back(1);
+	REQUIRE(v1[0] == 1);
+	REQUIRE(v1.size() == 1);
+	v1.pop_back();
+	REQUIRE(v1.size() == 0);
+	v1.push_back(2);
+	REQUIRE(v1[0] == 2);
+}

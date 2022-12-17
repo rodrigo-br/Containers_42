@@ -140,74 +140,74 @@ namespace ft {
 /******************************************************************************/
 
 	template<class T>
-	bool operator==(const ft::random_access_iterator<T>& lhs, const ft::random_access_iterator<T>& rhs)
-	{
+	bool operator==(const ft::random_access_iterator<T>& lhs,
+					const ft::random_access_iterator<T>& rhs) {
 		return lhs.base() == rhs.base();
 	};
 
 	template<class T>
-	bool operator!=(const ft::random_access_iterator<T>& lhs, const ft::random_access_iterator<T>& rhs)
-	{
+	bool operator!=(const ft::random_access_iterator<T>& lhs,
+					const ft::random_access_iterator<T>& rhs) {
 		return lhs.base() != rhs.base();
 	};
 
 	template<class T>
-	bool operator<(const ft::random_access_iterator<T>& lhs, const ft::random_access_iterator<T>& rhs)
-	{
+	bool operator<(const ft::random_access_iterator<T>& lhs,
+					const ft::random_access_iterator<T>& rhs) {
 		return lhs.base() < rhs.base();
 	};
 
 	template<class T>
-	bool operator<=(const ft::random_access_iterator<T>& lhs, const ft::random_access_iterator<T>& rhs)
-	{
+	bool operator<=(const ft::random_access_iterator<T>& lhs,
+					const ft::random_access_iterator<T>& rhs) {
 		return lhs.base() <= rhs.base();
 	};
 
 	template<class T>
-	bool operator>(const ft::random_access_iterator<T>& lhs, const ft::random_access_iterator<T>& rhs)
-	{
+	bool operator>(const ft::random_access_iterator<T>& lhs,
+					const ft::random_access_iterator<T>& rhs) {
 		return lhs.base() > rhs.base();
 	};
 
 	template<class T>
-	bool operator>=(const ft::random_access_iterator<T>& lhs, const ft::random_access_iterator<T>& rhs)
-	{
+	bool operator>=(const ft::random_access_iterator<T>& lhs,
+					const ft::random_access_iterator<T>& rhs) {
 		return lhs.base() >= rhs.base();
 	};
 
 	template<class T_L, class T_R>
-	bool operator==(const ft::random_access_iterator<T_R>& lhs, const ft::random_access_iterator<T_L>& rhs)
-	{
+	bool operator==(const ft::random_access_iterator<T_R>& lhs,
+					const ft::random_access_iterator<T_L>& rhs) {
 		return lhs.base() == rhs.base();
 	};
 
 	template<class T_L, class T_R>
-	bool operator!=(const ft::random_access_iterator<T_L>& lhs, const ft::random_access_iterator<T_R>& rhs)
-	{
+	bool operator!=(const ft::random_access_iterator<T_L>& lhs,
+					const ft::random_access_iterator<T_R>& rhs) {
 		return lhs.base() != rhs.base();
 	};
 
 	template<class T_L, class T_R>
-	bool operator<(const ft::random_access_iterator<T_L>& lhs, const ft::random_access_iterator<T_R>& rhs)
-	{
+	bool operator<(const ft::random_access_iterator<T_L>& lhs,
+					const ft::random_access_iterator<T_R>& rhs) {
 		return lhs.base() < rhs.base();
 	};
 
 	template<class T_L, class T_R>
-	bool operator<=(const ft::random_access_iterator<T_L>& lhs, const ft::random_access_iterator<T_R>& rhs)
-	{
+	bool operator<=(const ft::random_access_iterator<T_L>& lhs,
+					const ft::random_access_iterator<T_R>& rhs) {
 		return lhs.base() <= rhs.base();
 	};
 
 	template<class T_L, class T_R>
-	bool operator>(const ft::random_access_iterator<T_L>& lhs, const ft::random_access_iterator<T_R>& rhs)
-	{
+	bool operator>(const ft::random_access_iterator<T_L>& lhs,
+					const ft::random_access_iterator<T_R>& rhs) {
 		return lhs.base() > rhs.base();
 	};
 
 	template<class T_L, class T_R>
-	bool operator>=(const ft::random_access_iterator<T_L>& lhs, const ft::random_access_iterator<T_R>& rhs)
-	{
+	bool operator>=(const ft::random_access_iterator<T_L>& lhs,
+					const ft::random_access_iterator<T_R>& rhs) {
 		return lhs.base() >= rhs.base();
 	};
 };//namespace ft

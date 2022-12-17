@@ -159,7 +159,14 @@ namespace ft {
 			}
 			_alloc.construct(&_data[_size], val);
 			_size++;
-		}
+		};
+
+		void pop_back(void) {
+			if (_size == 0)
+				return ;
+			_size--;
+			_alloc.destroy(_data + _size);
+		};
 
 /******************************************************************************/
 /*								Allocator								      */
