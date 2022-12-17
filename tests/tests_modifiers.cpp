@@ -54,3 +54,28 @@ TEST_CASE ("Tests resize com parâmetro maior ao size atual com val definido") {
 
 	compare(v1, v2);
 }
+
+TEST_CASE("Teste Push back com _size < _capacity") {
+	ft::vector<int> v1;
+	v1.reserve(5);
+	v1.push_back(0);
+	v1.push_back(5);
+	v1.push_back(10);
+	v1.push_back(15);
+	v1.push_back(20);
+	for (int i = 0; i < v1.size(); i++) {
+		REQUIRE(i * 5 == v1[i]);
+	}
+}
+
+TEST_CASE("Teste Push back com _capacity 0 e _size + 1 > _capacity") {
+	ft::vector<int> v1;
+	v1.push_back(0);
+	v1.push_back(5);
+	v1.push_back(10);
+	v1.push_back(15);
+	v1.push_back(20);
+	for (int i = 0; i < v1.size(); i++) {
+		REQUIRE(i * 5 == v1[i]);
+	}
+}

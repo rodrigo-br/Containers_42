@@ -161,6 +161,5 @@ namespace ft {
 		typedef true_type type;
 	};
 
-}; 
-//namespace ft
+}; //namespace ft
 #endif

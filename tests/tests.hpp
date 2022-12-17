@@ -5,6 +5,7 @@
 #include "../src/vector.hpp"
 #include "../src/reverse_iterator.hpp"
 #include "../src/iterator_traits.hpp"
+#include "../src/type_traits.hpp"
 #include <vector>
 #include <iostream>
 #include <iterator>     // std::iterator, std::input_iterator_tag
