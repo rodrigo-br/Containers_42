@@ -1,8 +1,10 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 #include <stdexcept>
+#include <iostream>
 #include "random_access_iterator.hpp"
 #include "reverse_iterator.hpp"
+#include "type_traits.hpp"
 
 namespace ft {
 	template<class T, class Allocator = std::allocator<T> >
@@ -178,7 +180,7 @@ namespace ft {
 			}
 		};
 
-		iterator erase (iterator position) {
+		iterator erase(iterator position) {
 			iterator return_iterator = position;
 			iterator copy_iterator = position;
 			size_type i = 0;
@@ -199,7 +201,20 @@ namespace ft {
 			return return_iterator;
 		}
 		
-		iterator erase (iterator first, iterator last);
+		iterator erase(iterator first, iterator last) {
+			if (first == end())
+				return first;
+			iterator return_iterator = first;
+			std::copy(last.base(), end().base(), first.base());
+			_size -= last - first;
+			if (!ft::is_integral<value_type>::value) {
+				while (first != end()) {
+					_alloc.destroy(first.base());
+					first++;
+				}
+			}
+			return return_iterator;
+		}
 
 /******************************************************************************/
 /*								Allocator								      */

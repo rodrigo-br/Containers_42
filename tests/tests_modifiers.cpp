@@ -95,16 +95,29 @@ TEST_CASE("Teste erase position") {
 	std::vector<int> original;
 	ft::vector<int> myvector;
 
-  // set some values (from 1 to 10)
+  // set some values (from 1 to 5)
 	for (int i = 1; i <= 5; i++) original.push_back(i);
 	for (int i = 1; i <= 5; i++) myvector.push_back(i);
 
 	// erase the 6th element
-	original.erase (original.begin() + 3);
-	myvector.erase (myvector.begin() + 3);
+	original.erase(original.begin() + 3);
+	myvector.erase(myvector.begin() + 3);
 
-//	 // erase the first 3 elements:
-//	 original.erase (original.begin(),original.begin()+3);
+	for (unsigned i = 0; i < original.size(); ++i)
+		REQUIRE(original[i] == myvector[i]);
+}
+
+TEST_CASE("Teste erase range") {
+	std::vector<int> original;
+	ft::vector<int> myvector;
+
+  	// set some values (from 1 to 5)
+	for (int i = 1; i <= 5; i++) original.push_back(i);
+	for (int i = 1; i <= 5; i++) myvector.push_back(i);
+
+	 // erase the first 3 elements:
+	 original.erase(original.begin() ,original.begin() + 3);
+	 myvector.erase(myvector.begin() ,myvector.begin() + 3);
 
 	for (unsigned i = 0; i < original.size(); ++i)
 		REQUIRE(original[i] == myvector[i]);
