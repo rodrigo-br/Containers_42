@@ -101,16 +101,22 @@ namespace ft {
 /******************************************************************************/
 
 		void reserve(size_type new_cap) {
-			if (new_cap > max_size()) { throw std::length_error(""); }
+			if (new_cap > max_size()) { throw std::length_error("cavalinho"); }
 			if (new_cap <= _capacity) { return ; }
-			value_type *newData = _alloc.allocate(new_cap);
+
+			pointer newData = _alloc.allocate(new_cap);
 			for (size_type i = 0; i < _size; i++) {
 				_alloc.construct(&newData[i], _data[i]);
 			}
+
+			for (size_type i = 0; i < _size; i++) {
+				_alloc.destroy(&_data[i]);
+			}
 			_alloc.deallocate(_data, _capacity);
+
 			_data = newData;
 			_capacity = new_cap;
-		};
+		}
 
 		size_type size(void) const { return _size; };
 
@@ -156,7 +162,7 @@ namespace ft {
 		void push_back(const value_type& val) {
 			if (_capacity == 0) { reserve(1); }
 			else if (_size + 1 > _capacity) {
-				reserve(_capacity + 1);
+				reserve(_size + 1);
 			}
 			_alloc.construct(&_data[_size], val);
 			_size++;
