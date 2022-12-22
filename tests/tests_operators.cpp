@@ -62,3 +62,100 @@ TEST_CASE("Test operator!= com vector int diferentes") {
 
 	REQUIRE((x != y) == true);
 }
+
+TEST_CASE("Test operator< com vector int") {
+	ft::vector<int> x(5, 100);
+	ft::vector<int> y(4, 100);
+	std::vector<int> x2(5, 100);
+	std::vector<int> y2(4, 100);
+
+	REQUIRE((x < y) == (x2 < y2));
+
+	ft::vector<int> z(4, 100);
+	std::vector<int> z2(4, 100);
+
+	REQUIRE((y < z) == (y2 < z2));
+
+	ft::vector<int> w(4, 100);
+	std::vector<int> w2(4, 100);
+
+	w.pop_back();
+	w2.pop_back();
+	w.push_back(101);
+	w2.push_back(101);
+
+	REQUIRE((z < w) == (z2 < w2));
+}
+
+TEST_CASE("Test operator> com vector int") {
+	ft::vector<int> x(5, 100);
+	ft::vector<int> y(4, 100);
+	std::vector<int> x2(5, 100);
+	std::vector<int> y2(4, 100);
+
+	REQUIRE((x > y) == (x2 > y2));
+
+	ft::vector<int> z(4, 100);
+	std::vector<int> z2(4, 100);
+
+	REQUIRE((y > z) == (y2 > z2));
+
+	ft::vector<int> w(4, 100);
+	std::vector<int> w2(4, 100);
+
+	w.pop_back();
+	w2.pop_back();
+	w.push_back(101);
+	w2.push_back(101);
+
+	REQUIRE((z > w) == (z2 > w2));
+}
+
+TEST_CASE("Test operator>= com vector int") {
+	ft::vector<int> x(5, 100);
+	ft::vector<int> y(4, 100);
+	std::vector<int> x2(5, 100);
+	std::vector<int> y2(4, 100);
+
+	REQUIRE((x >= y) == (x2 >= y2));
+
+	ft::vector<int> z(4, 100);
+	std::vector<int> z2(4, 100);
+
+	REQUIRE((y >= z) == (y2 >= z2));
+
+	ft::vector<int> w(4, 100);
+	std::vector<int> w2(4, 100);
+
+	w.pop_back();
+	w2.pop_back();
+	w.push_back(101);
+	w2.push_back(101);
+
+	REQUIRE((z >= w) == (z2 >= w2));
+}
+
+TEST_CASE("Test operator<= com vector int") {
+	ft::vector<int> x(5, 100);
+	ft::vector<int> y(4, 100);
+	std::vector<int> x2(5, 100);
+	std::vector<int> y2(4, 100);
+
+	REQUIRE((x <= y) == (x2 <= y2));
+
+	ft::vector<int> z(4, 100);
+	std::vector<int> z2(4, 100);
+
+	REQUIRE((y <= z) == (y2 <= z2));
+
+	ft::vector<int> w(4, 100);
+	std::vector<int> w2(4, 100);
+
+	w.pop_back();
+	w2.pop_back();
+	w.push_back(101);
+	w2.push_back(101);
+
+	REQUIRE((z <= w) == (z2 <= w2));
+}
+

@@ -163,13 +163,32 @@ TEST_CASE("Teste Assign function modo range usando iteradores") {
 	compare(myvector_final, original_final);
 }
 
-TEST_CASE("Test Swap") {
+TEST_CASE("Test Swap member function") {
 	ft::vector<int> old_foo (3, 100);
 	ft::vector<int> new_bar (3, 100);   // three ints with a value of 100
  	ft::vector<int> old_bar (5, 200);
 	ft::vector<int> new_foo (5, 200);   // five ints with a value of 200
 
 	old_foo.swap(old_bar);
+	REQUIRE(old_foo.size() == 5);
+	REQUIRE(old_bar.size() == 3);
+
+	for (size_t i = 0; i < new_bar.size(); i++) {
+		REQUIRE(new_bar[i] == old_bar[i]);
+	}
+
+	for (size_t i = 0; i < new_foo.size(); i++) {
+		REQUIRE(new_foo[i] == old_foo[i]);
+	}
+}
+
+TEST_CASE("Test Swap NON-member function") {
+	ft::vector<int> old_foo (3, 100);
+	ft::vector<int> new_bar (3, 100);   // three ints with a value of 100
+ 	ft::vector<int> old_bar (5, 200);
+	ft::vector<int> new_foo (5, 200);   // five ints with a value of 200
+
+	swap(old_bar, old_foo);
 	REQUIRE(old_foo.size() == 5);
 	REQUIRE(old_bar.size() == 3);
 

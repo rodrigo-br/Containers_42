@@ -342,7 +342,7 @@ namespace ft {
 		reverse_iterator rend(void) {	return reverse_iterator(begin()); };
 
 		const_reverse_iterator rend(void) const {	return const_reverse_iterator(begin()); };
-	};
+	};//class vector
 
 /******************************************************************************/
 /*							Non-Member Functions							  */
@@ -351,12 +351,35 @@ namespace ft {
 		template<class T>
 		bool operator==(const vector<T>& lhs, const vector<T>& rhs) {
 			return equal(lhs.begin(), lhs.end(), rhs.begin());
-		}
+		};
 
 		template<class T>
 		bool operator!=(const vector<T>& lhs, const vector<T>& rhs) {
 			return !equal(lhs.begin(), lhs.end(), rhs.begin());
-		}
+		};
+
+		template<class T>
+		bool operator<(const vector<T>& lhs, const vector<T>& rhs) {
+			return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		};
+
+		template<class T>
+		bool operator>(const vector<T>& lhs, const vector<T>& rhs) {
+			return rhs < lhs;
+		};
+
+		template<class T>
+		bool operator<=(const vector<T>& lhs, const vector<T>& rhs) {
+			return !(rhs < lhs);
+		};
+
+		template<class T>
+		bool operator>=(const vector<T>& lhs, const vector<T>& rhs) {
+			return !(lhs < rhs);
+		};
+
+		template<class T>
+		void swap(vector<T>& lhs, vector<T>& rhs) { lhs.swap(rhs); };
 
 };//namespace ft
 
