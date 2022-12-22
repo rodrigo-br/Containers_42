@@ -105,9 +105,7 @@ namespace ft {
 			if (new_cap <= _capacity) { return ; }
 
 			pointer newData = _alloc.allocate(new_cap);
-			for (size_type i = 0; i < _size; i++) {
-				_alloc.construct(&newData[i], _data[i]);
-			}
+			std::uninitialized_copy(_data, _data + _size, newData);
 
 			for (size_type i = 0; i < _size; i++) {
 				_alloc.destroy(&_data[i]);
@@ -248,6 +246,57 @@ namespace ft {
 			_data = temp_data;
 		}
 
+		iterator insert(const_iterator pos, const T& value) {
+			size_type index = pos - begin();
+			if (_size + 1 > _capacity) {
+				reserve(_size + 1);
+			}
+			for (size_type i = _size; i >= index && i-- > 0;) {
+				_alloc.construct(&_data[i + 1], _data[i]);
+				_alloc.destroy(&_data[i]);
+			}
+			_alloc.construct(&_data[index], value);
+			_size++;
+			return begin() + index;
+		};
+
+		iterator insert(const_iterator pos, size_type count, const T& value) {
+			size_type index = pos - begin();
+			if (_size + count > _capacity) {
+				reserve(_size + count);
+			}
+			for (size_type i = _size; i >= index && i-- > 0;) {
+				_alloc.construct(&_data[i + count], _data[i]);
+				_alloc.destroy(&_data[i]);
+			}
+			for (size_type i = index; i < index + count; i++) {
+				_alloc.construct(&_data[i], value);
+			}
+			_size += count;
+			return begin() + index;
+		};
+
+		template<class InputIt>
+		iterator insert(const_iterator pos, InputIt first, InputIt last,
+						typename enable_if<!is_integral<InputIt>::value>::type* = 0) {
+			size_type index = pos - begin();
+			if (_size + (last - first) > _capacity) {
+				reserve(_size + (last - first));
+			}
+			for (size_type i = _size; i >= index && i-- > 0;) {
+				_alloc.construct(&_data[i + (last - first)], _data[i]);
+				_alloc.destroy(&_data[i]);
+			}
+			while (first != last) {
+				_alloc.construct(&_data[index], *first);
+				first++;
+				index++;
+				_size++;
+			}
+			return begin() + index;
+		};
+
+
 /******************************************************************************/
 /*								Allocator								      */
 /******************************************************************************/
@@ -294,6 +343,21 @@ namespace ft {
 
 		const_reverse_iterator rend(void) const {	return const_reverse_iterator(begin()); };
 	};
+
+/******************************************************************************/
+/*							Non-Member Functions							  */
+/******************************************************************************/
+
+		template<class T>
+		bool operator==(const vector<T>& lhs, const vector<T>& rhs) {
+			return equal(lhs.begin(), lhs.end(), rhs.begin());
+		}
+
+		template<class T>
+		bool operator!=(const vector<T>& lhs, const vector<T>& rhs) {
+			return !equal(lhs.begin(), lhs.end(), rhs.begin());
+		}
+
 };//namespace ft
 
 

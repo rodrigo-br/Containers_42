@@ -130,10 +130,7 @@ TEST_CASE("Teste Assign function modo fill") {
 	original.assign(7, 100); // 7 ints with a value of 100
 	myvector.assign(7, 100);
 
-	for (size_t i = 0; i < original.size(); i++) {
-		REQUIRE(original[i] == myvector[i]);
-	}
-	REQUIRE(original.size() == myvector.size());
+	compare(myvector, original);
 }
 
 TEST_CASE("Teste Assign function modo range usando array de int") {
@@ -144,10 +141,7 @@ TEST_CASE("Teste Assign function modo range usando array de int") {
 	original.assign(myints,myints + 3);	// assigning from array.
 	myvector.assign(myints,myints + 3);
 
-	for (size_t i = 0; i < original.size(); i++) {
-		REQUIRE(original[i] == myvector[i]);
-	}
-	REQUIRE(original.size() == myvector.size());
+	compare(myvector, original);
 }
 
 TEST_CASE("Teste Assign function modo range usando iteradores") {
@@ -166,27 +160,91 @@ TEST_CASE("Teste Assign function modo range usando iteradores") {
 	original_final.assign(it_original, it_original + 5);
 	myvector_final.assign(it_myvector, it_myvector + 5);
 
-	for (size_t i = 0; i < original.size(); i++) {
-		REQUIRE(original_final[i] == myvector_final[i]);
-	}
-	REQUIRE(original_final.size() == myvector_final.size());
+	compare(myvector_final, original_final);
 }
 
-// TEST_CASE("Test Swap") {
-// 	ft::vector<int> old_foo (3, 100);
-// 	ft::vector<int> new_bar (3, 100);   // three ints with a value of 100
-//  	ft::vector<int> old_bar (5, 200);
-// 	ft::vector<int> new_foo (5, 200);   // five ints with a value of 200
+TEST_CASE("Test Swap") {
+	ft::vector<int> old_foo (3, 100);
+	ft::vector<int> new_bar (3, 100);   // three ints with a value of 100
+ 	ft::vector<int> old_bar (5, 200);
+	ft::vector<int> new_foo (5, 200);   // five ints with a value of 200
 
-// 	old_foo.swap(old_bar);
-// 	REQUIRE(old_foo.size() == 5);
-// 	REQUIRE(old_bar.size() == 3);
+	old_foo.swap(old_bar);
+	REQUIRE(old_foo.size() == 5);
+	REQUIRE(old_bar.size() == 3);
 
-// 	for (size_t i = 0; i < new_bar.size(); i++) {
-// 		REQUIRE(new_bar[i] == old_bar[i]);
-// 	}
+	for (size_t i = 0; i < new_bar.size(); i++) {
+		REQUIRE(new_bar[i] == old_bar[i]);
+	}
 
-// 	for (size_t i = 0; i < new_foo.size(); i++) {
-// 		REQUIRE(new_foo[i] == old_foo[i]);
-// 	}
-// }
+	for (size_t i = 0; i < new_foo.size(); i++) {
+		REQUIRE(new_foo[i] == old_foo[i]);
+	}
+}
+
+TEST_CASE("Test Insert pos value com int") {
+	std::vector<int> original;
+	ft::vector<int> myvector;
+
+	original.insert(original.begin(), 1);
+	myvector.insert(myvector.begin(), 1);
+
+	compare(myvector, original);
+}
+
+TEST_CASE("Test Insert pos e value com string") {
+	std::vector<std::string> original;
+	ft::vector<std::string> myvector;
+
+	original.insert(original.begin(), "cavalinho");
+	myvector.insert(myvector.begin(), "cavalinho");
+
+	compare(myvector, original);
+}
+
+TEST_CASE("Test Insert pos, count e value com int") {
+	std::vector<int> original;
+	ft::vector<int> myvector;
+
+	original.insert(original.begin(), 5, 1);
+	myvector.insert(myvector.begin(), 5, 1);
+
+	compare(myvector, original);
+}
+
+TEST_CASE("Test Insert pos, count e value com int não vazio") {
+	std::vector<int> original;
+	ft::vector<int> myvector;
+
+	original.push_back(1);
+	original.push_back(2);
+	myvector.push_back(1);
+	myvector.push_back(2);
+	original.insert(original.begin() + 1, 5, 1);
+	myvector.insert(myvector.begin() + 1, 5, 1);
+
+	compare(myvector, original);
+}
+
+TEST_CASE("Test Insert int com iteradores") {
+	std::vector<int> x = {1, 2, 3, 4, 5};
+	std::vector<int> original;
+	ft::vector<int> myvector;
+	
+	original.insert(original.begin(), x.begin(), x.end());
+	myvector.insert(myvector.begin(), x.begin(), x.end());
+
+	compare(myvector, original);
+}
+
+TEST_CASE("Test Insert string com iteradores") {
+	std::vector<std::string> x = {"cavalinho", "na", "chuva"};
+	std::vector<std::string> original;
+	ft::vector<std::string> myvector;
+	
+	original.insert(original.begin(), x.begin(), x.end());
+	myvector.insert(myvector.begin(), x.begin(), x.end());
+
+	compare(myvector, original);
+}
+

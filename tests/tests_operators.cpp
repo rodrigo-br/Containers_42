@@ -20,3 +20,45 @@ TEST_CASE ("Testando operator= com vector(5)") {
 		REQUIRE(y[i] == x[i]);
 	}
 }
+
+TEST_CASE("Test operator== com vector int vazio") {
+	ft::vector<int> x;
+	ft::vector<int> y;
+
+	REQUIRE((x == y) == true);
+}
+
+TEST_CASE("Test operator== com vector int iguais") {
+	ft::vector<int> x(5, 100);
+	ft::vector<int> y(5, 100);
+
+	REQUIRE((x == y) == true);
+}
+
+TEST_CASE("Test operator== com vector int diferentes") {
+	ft::vector<int> x(5, 100);
+	ft::vector<int> y(5, 80);
+
+	REQUIRE((x == y) == false);
+}
+
+TEST_CASE("Test operator!= com vector int vazio") {
+	ft::vector<int> x;
+	ft::vector<int> y;
+
+	REQUIRE((x != y) == false);
+}
+
+TEST_CASE("Test operator!= com vector int iguais") {
+	ft::vector<int> x(5, 100);
+	ft::vector<int> y(5, 100);
+
+	REQUIRE((x != y) == false);
+}
+
+TEST_CASE("Test operator!= com vector int diferentes") {
+	ft::vector<int> x(5, 100);
+	ft::vector<int> y(5, 80);
+
+	REQUIRE((x != y) == true);
+}

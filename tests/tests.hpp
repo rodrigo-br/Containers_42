@@ -57,7 +57,7 @@ void print_vector(std::vector<T> &v) {
  */
 template<typename T>
 void compare(ft::vector<T> &v1, std::vector<T> &v2) {
-	for (size_t i = 0; i < v1.size(); i++) {
+	for (size_t i = 0; i < v2.size(); i++) {
 		REQUIRE(v2[i] == v1[i]);
 	}
 	REQUIRE(v2.size() == v1.size());
