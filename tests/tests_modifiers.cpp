@@ -95,7 +95,7 @@ TEST_CASE("Teste erase position") {
 	std::vector<int> original;
 	ft::vector<int> myvector;
 
-  // set some values (from 1 to 5)
+	// set some values (from 1 to 5)
 	for (int i = 1; i <= 5; i++) original.push_back(i);
 	for (int i = 1; i <= 5; i++) myvector.push_back(i);
 
@@ -123,23 +123,70 @@ TEST_CASE("Teste erase range") {
 		REQUIRE(original[i] == myvector[i]);
 }
 
-TEST_CASE("Teste Assign function") {
-	std::vector<int> first;
-	std::vector<int> second;
-	std::vector<int> third;
+TEST_CASE("Teste Assign function modo fill") {
+	std::vector<int> original;
+	ft::vector<int> myvector;
 
-	first.assign (7,100);	 // 7 ints with a value of 100
+	original.assign(7, 100); // 7 ints with a value of 100
+	myvector.assign(7, 100);
 
-	std::vector<int>::iterator it;
-	it=first.begin()+1;
-
-	second.assign (it,first.end()-1); // the 5 central values of first
-
-	int myints[] = {1776,7,4};
-	third.assign (myints,myints+3);	 // assigning from array.
-
-	REQUIRE(first.size() == 7);
-	REQUIRE(second.size() == 5);
-	REQUIRE(third.size() == 3);
+	for (size_t i = 0; i < original.size(); i++) {
+		REQUIRE(original[i] == myvector[i]);
+	}
+	REQUIRE(original.size() == myvector.size());
 }
 
+TEST_CASE("Teste Assign function modo range usando array de int") {
+	std::vector<int> original;
+	ft::vector<int> myvector;
+
+	int myints[] = {1776,7,4};
+	original.assign(myints,myints + 3);	// assigning from array.
+	myvector.assign(myints,myints + 3);
+
+	for (size_t i = 0; i < original.size(); i++) {
+		REQUIRE(original[i] == myvector[i]);
+	}
+	REQUIRE(original.size() == myvector.size());
+}
+
+TEST_CASE("Teste Assign function modo range usando iteradores") {
+	std::vector<int> original;
+	std::vector<int> original_final;
+	ft::vector<int> myvector;
+	ft::vector<int> myvector_final;
+
+	original.assign (7,100);	// 7 ints with a value of 100
+	myvector.assign (7,100);
+	std::vector<int>::iterator it_original;
+	ft::vector<int>::iterator it_myvector;
+	it_original = original.begin();
+	it_myvector = myvector.begin();
+
+	original_final.assign(it_original, it_original + 5);
+	myvector_final.assign(it_myvector, it_myvector + 5);
+
+	for (size_t i = 0; i < original.size(); i++) {
+		REQUIRE(original_final[i] == myvector_final[i]);
+	}
+	REQUIRE(original_final.size() == myvector_final.size());
+}
+
+// TEST_CASE("Test Swap") {
+// 	ft::vector<int> old_foo (3, 100);
+// 	ft::vector<int> new_bar (3, 100);   // three ints with a value of 100
+//  	ft::vector<int> old_bar (5, 200);
+// 	ft::vector<int> new_foo (5, 200);   // five ints with a value of 200
+
+// 	old_foo.swap(old_bar);
+// 	REQUIRE(old_foo.size() == 5);
+// 	REQUIRE(old_bar.size() == 3);
+
+// 	for (size_t i = 0; i < new_bar.size(); i++) {
+// 		REQUIRE(new_bar[i] == old_bar[i]);
+// 	}
+
+// 	for (size_t i = 0; i < new_foo.size(); i++) {
+// 		REQUIRE(new_foo[i] == old_foo[i]);
+// 	}
+// }

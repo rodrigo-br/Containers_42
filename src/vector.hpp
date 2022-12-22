@@ -2,6 +2,7 @@
 #define VECTOR_H
 #include <stdexcept>
 #include <iostream>
+#include <memory>
 #include "random_access_iterator.hpp"
 #include "reverse_iterator.hpp"
 #include "type_traits.hpp"
@@ -38,8 +39,10 @@ namespace ft {
 /*					Constructors & Destructor							      */
 /******************************************************************************/
 
+
 		explicit vector(const allocator_type &alloc = allocator_type()) :
-			_alloc(alloc), _size(0), _capacity(0), _data(NULL) {};
+			_alloc(alloc), _size(0), _capacity(0), _data(_alloc.allocate(0)) {};
+
 
 		explicit vector(size_type size,
 						const value_type &value = value_type(),
@@ -53,13 +56,11 @@ namespace ft {
 
 		template<class InputIt>
 		vector(InputIt first, InputIt last,
-        		const allocator_type &alloc = allocator_type()) :
-			_alloc(alloc), _size(0), _capacity(last - first), _data(_alloc.allocate(_capacity)) {
-				for (size_type i = 0; i < _capacity; i++) {
-					_alloc.construct(&_data[i], *(first + i));
-					_size++;
-				}
-			};
+        		const allocator_type &alloc = allocator_type(),
+				typename enable_if<!is_integral<InputIt>::value>::type* = 0) :
+				_alloc(alloc), _size(0), _capacity(0), _data(_alloc.allocate(0)) {
+					assign(first, last);
+				};
 
 		~vector() { _alloc.deallocate(_data, _capacity); };
 
@@ -102,8 +103,7 @@ namespace ft {
 		void reserve(size_type new_cap) {
 			if (new_cap > max_size()) { throw std::length_error(""); }
 			if (new_cap <= _capacity) { return ; }
-			value_type *newData;
-			newData = _alloc.allocate(new_cap);
+			value_type *newData = _alloc.allocate(new_cap);
 			for (size_type i = 0; i < _size; i++) {
 				_alloc.construct(&newData[i], _data[i]);
 			}
@@ -150,14 +150,13 @@ namespace ft {
 /******************************************************************************/
 
 		void clear(void) {
-			_alloc.destroy(_data);
-			_size = 0;
+			erase(begin(), end());
 		};
 
 		void push_back(const value_type& val) {
 			if (_capacity == 0) { reserve(1); }
 			else if (_size + 1 > _capacity) {
-				reserve((_capacity * 2 < max_size() ? _capacity * 2 : max_size()));
+				reserve(_capacity + 1);
 			}
 			_alloc.construct(&_data[_size], val);
 			_size++;
@@ -170,23 +169,14 @@ namespace ft {
 			_alloc.destroy(&_data[_size]);
 		};
 
-		template <class Iterator>
-		void assign(Iterator first, Iterator last) {
-			while (first != last) {
-				if (_size + 1 > _capacity) {
-					reserve((_capacity * 2 < max_size() ? _capacity * 2 : max_size()));
-				}
-				return ;
-			}
-		};
-
 		iterator erase(iterator position) {
 			iterator return_iterator = position;
 			iterator copy_iterator = position;
 			size_type i = 0;
 			for (; i < _size; i++) {
 				if (copy_iterator == position) {
-					_alloc.destroy(&_data[i]);
+					if (!ft::is_integral<value_type>::value)
+						_alloc.destroy(&_data[i]);
 					break ;
 				}
 			}
@@ -199,21 +189,57 @@ namespace ft {
 				_size--;
 			}
 			return return_iterator;
-		}
-		
+		};
+
 		iterator erase(iterator first, iterator last) {
 			if (first == end())
 				return first;
 			iterator return_iterator = first;
 			std::copy(last.base(), end().base(), first.base());
-			_size -= last - first;
 			if (!ft::is_integral<value_type>::value) {
 				while (first != end()) {
 					_alloc.destroy(first.base());
+					_size--;
 					first++;
 				}
 			}
 			return return_iterator;
+		};
+
+		void assign(size_type n, const value_type& val) {
+			clear();
+			for (size_type i = 0; i < n; i++) {
+				push_back(val);
+			}
+		};
+
+		template <class Iterator>
+		typename enable_if<!is_integral<Iterator>::value, void>::type
+		assign(Iterator first, Iterator last) {
+			_assign(first, last, typename iterator_traits<Iterator>::iterator_category());
+		};
+
+		template <class Iterator>
+		void _assign(Iterator first, Iterator last, std::input_iterator_tag) {
+			clear();
+			while (first != last) {
+				push_back(*first);
+				first++;
+			}
+		};
+
+		void swap (vector& x) {
+			size_type	temp_size = x._size;
+			size_type	temp_capacity = x._capacity;
+			pointer		temp_data = x._data;
+
+			x._size = _size;
+			x._capacity = _capacity;
+			x._data = _data;
+
+			_size = temp_size;
+			_capacity = temp_capacity;
+			_data = temp_data;
 		}
 
 /******************************************************************************/
