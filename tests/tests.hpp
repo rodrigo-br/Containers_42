@@ -7,6 +7,7 @@
 #include "../src/iterator_traits.hpp"
 #include "../src/type_traits.hpp"
 #include "../src/algorithm.hpp"
+#include "../src/utility.hpp"
 #include <vector>
 #include <iostream>
 #include <iterator>     // std::iterator, std::input_iterator_tag
