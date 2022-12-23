@@ -5,7 +5,7 @@ bool mypredicate (int i, int j) {
 }
 
 TEST_CASE ("Testando equal") {
-  int myints[] = {20,40,60,80,100};               //   myints: 20 40 60 80 100
+  int myints[] = {20, 40, 60, 80, 100};            //   myints: 20 40 60 80 100
   ft::vector<int>myvector(myints, myints + 5);     // myvector: 20 40 60 80 100
 
   // using default comparison:

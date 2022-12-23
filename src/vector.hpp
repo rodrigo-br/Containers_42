@@ -1,5 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
+
 #include <stdexcept>
 #include <iostream>
 #include <memory>
@@ -88,13 +89,6 @@ namespace ft {
 		reference operator[](size_type index) {
 			return _data[index];
 		};
-
-		// template<value_type, Allocator>
-		// bool operator==(const ft::vector<value_type,Allocator>& lhs, const ft::vector<value_type,Allocator>& rhs) {
-		// 	if (lhs.size() != rhs.size())
-		// 		return (false);
-		// 	return (true);
-		// }
 
 /******************************************************************************/
 /*								Capacity								      */
