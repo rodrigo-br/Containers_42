@@ -40,7 +40,6 @@ namespace ft {
 /*					Constructors & Destructor							      */
 /******************************************************************************/
 
-
 		explicit vector(const allocator_type &alloc = allocator_type()) :
 			_alloc(alloc), _size(0), _capacity(0), _data(_alloc.allocate(0)) {};
 
