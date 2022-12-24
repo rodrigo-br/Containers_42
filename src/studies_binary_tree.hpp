@@ -3,6 +3,7 @@
 
 #include "iterator_traits.hpp"
 #include "utility.hpp"
+#include <memory>
 
 namespace ft {
 	template<class T, class Alloc = std::allocator<T> >
@@ -77,13 +78,31 @@ namespace ft {
 			};
 
 			template<class Visit>
-			void preorder(NodePtr node, Visit) const {};
+			void preorder(NodePtr node, Visit visit) const {
+				if (node == NULL)
+					return;
+				visit(node->value);
+				preorder(node->left, visit);
+				preorder(node->right, visit);
+			};
 
 			template<class Visit>
-			void inorder(NodePtr node, Visit) const {};
+			void inorder(NodePtr node, Visit visit) const {
+				if (node == NULL)
+					return;
+				inorder(node->left, visit);
+				visit(node->value);
+				inorder(node->right, visit);
+			};
 
 			template<class Visit>
-			void postorder(NodePtr node, Visit) const {};
+			void postorder(NodePtr node, Visit visit) const {
+				if (node == NULL)
+					return;
+				inorder(node->left, visit);
+				inorder(node->right, visit);
+				visit(node->value);
+			};
 
 			template<bool MULTI>
 			pair<iterator, bool> insertNode(const value_type&) {};
@@ -117,6 +136,87 @@ namespace ft {
 			iterator getIterator(NodePtr node) { return node; };
 
 			NodePtr getNode(iterator it) { return it.current; };
+
+
+		public:
+			TreeBase() : _alloc(allocator_type), _root(NULL), _dummy(newNode()), _size(0) {};
+
+			TreeBase(const TreeBase &x) {};
+
+			TreeBase &operator=(const TreeBase &x) {};
+
+			~TreeBase() {};
+
+			allocator_type get_allocator() const { return _alloc; };
+
+			template<class Visit>
+			void preorder(Visit visit) const { preorder(_root, visit); };
+
+			template<class Visit>
+			void inorder(Visit visit) const { inorder(_root, visit); };
+
+			template<class Visit>
+			void postorder(Visit visit) const { postorder(_root, visit); };
+
+			iterator begin() { return _dummy->left; };
+
+			const_iterator begin() const { return _dummy->left; };
+
+			iterator end() { return _dummy; };
+
+			const_iterator end() const { return _dummy; };
+
+			size_type size() const { return _size; };
+
+			bool empty() const { return _size == 0; };
+
+			reference front() { return *begin(); };
+
+			reference back() { return *--end(); };
+
+			const_reference front() const { return *begin(); };
+
+			const_reference back() const { return *--end(); };
+
+			iterator find(const value_type& value) {
+				NodePtr node = _root;
+				aux = _dummy;
+				while (node != NULL) {
+					if (node->value < value)
+						node = node->right;
+					else {
+						aux = node;
+						node = node->left;
+					}
+				}
+				return (aux == _dummy || value < aux->value) ? end() : aux;
+			};
+
+			pair<iterator, bool> insertUni(const value_type& value) {};
+
+			iterator insertMulti(const value_type& value) {};
+
+			size_type erase(const value_type& value) {};
+
+			void erase(iterator it) {};
+
+			void clear() {};
+
+			void balance() {};
+
+			void displayValue(const value_type& value) const {
+				std::cout << value << ' ';
+			};
+
+			void display() const {
+				inorder(displayValue());
+			};
+
+			bool isBalanced() const {};
+
+			bool isOrdered() const {};
+
+			void printOn(ostream &os) const {};
 
 	}; // class TreeBase
 
