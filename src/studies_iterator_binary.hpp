@@ -15,8 +15,31 @@ namespace ft {
 
 		NodePtr current;
 
-		void inc() {};
-		void dec() {};
+		void inc() {
+			if (current->right == NULL) {
+				NodePtr ptr = current;
+				while ((current = current->parent)->right == ptr) {
+					ptr = current;
+				}
+			}
+			else
+				current = TreeBase<T, A>::leftMost(current->right);
+		};
+
+		void dec() {
+			if (current->left == NULL) {
+				NodePtr ptr = current;
+				while ((current = current->parent)->left == ptr) {
+					ptr = current;
+				}
+			}
+			else {
+				if (current->parent  == current)
+					current = current->right;
+				else
+					current = TreeBase<T, A>::rightMost(current->left);
+			}
+		};
 		
 		IT(NodePtr node) : current(node) {};
 
@@ -32,7 +55,7 @@ namespace ft {
 		};
 
 		IT operator++(int) {
-			IT tmp = *this;
+			IT tmp(*this);
 			inc();
 			return tmp;
 		};
@@ -43,7 +66,7 @@ namespace ft {
 		};
 
 		IT operator--(int) {
-			IT tmp = *this;
+			IT tmp(*this);
 			dec();
 			return tmp;
 		};
@@ -67,4 +90,5 @@ namespace ft {
 	}; // class TreeBase<T, A>::IT
 
 }; // namespace ft	
+
 #endif

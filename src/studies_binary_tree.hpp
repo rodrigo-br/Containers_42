@@ -4,6 +4,7 @@
 #include "iterator_traits.hpp"
 #include "utility.hpp"
 #include <memory>
+#include <iostream>
 
 namespace ft {
 	template<class T, class Alloc = std::allocator<T> >
@@ -105,17 +106,69 @@ namespace ft {
 			};
 
 			template<bool MULTI>
-			pair<iterator, bool> insertNode(const value_type&) {};
+			pair<iterator, bool> insertNode(const value_type& value) {
+				NodePtr r;
+				if (_root == NULL) {
+					r = _root = _dummy->left = _dummy->right = newNode(_dummy, value);
+				}
+				else {
+					r = _root;
+					for (;;) {
+						if (value < r->value) {
+							if (r->left == NULL) {
+								r = insertLeft(r, value);
+								break;
+							}
+							r = r->left;
+						}
+						else if (MULTI || value > r->value) {
+							if (r->right == NULL) {
+								r = insertRight(r, value);
+								break;
+							}
+							r = r->right;
+						}
+						else {
+							return pair<iterator, bool>(r, false);
+						}
+					}
+				}
+				++_size;
+				return pair<iterator, bool>(r, true);
+			};
 
-			NodePtr insertLeft(NodePtr node, const value_type&) {};
+			NodePtr insertLeft(NodePtr node, const value_type& value) {
+				node->left = newNode(node, value);
+				if (node == _dummy->left)
+					_dummy->left = node->left;
+				return node->left;
+			};
 
-			NodePtr insertRight(NodePtr node, const value_type&) {};
+			NodePtr insertRight(NodePtr node, const value_type& value) {
+				node->right = newNode(node, value);
+				if (node == _dummy->right)
+					_dummy->right = node->right;
+				return node->right;
+			};
 
-			static void setParent(NodePtr child, NodePtr parent) {};
+			static void setParent(NodePtr child, NodePtr parent) {
+				if (child != NULL)
+					child->parent = parent;
+			};
 
-			void transferParent(NodePtr x, NodePtr y) {};
+			void transferParent(NodePtr x, NodePtr y) {
+				NodePtr xp = x->parent;
+				((x == root) ? root : (xp->right == x) ? xp->right : xp->left) = y;
+				setParent(y, xp);
+			};
 
-			void transferNode(NodePtr x, NodePtr y) {};
+			void transferNode(NodePtr x, NodePtr y) {
+				transferParent(x, y);
+				y->left = x->left;
+				setParent(y->left, y);
+				y->right = x->right;
+				setParent(y->right, y);
+			};
 
 			void clear(NodePtr node) {};
 
@@ -123,9 +176,17 @@ namespace ft {
 
 			void copy(const TreeBase &x) {};
 
-			template<class NP> static NP rightMost(NP node) {};
+			template<class NP> static NP rightMost(NP node) {
+				while (node->right != NULL)
+					node = node->right;
+				return node;
+			};
 
-			template<class NP> static NP leftMost(NP node) {};
+			template<class NP> static NP leftMost(NP node) {
+				while (node->left != NULL)
+					node = node->left;
+				return node;
+			};
 
 			static bool isBalanced(ConstNodePtr, size_type &) {};
 
@@ -192,15 +253,49 @@ namespace ft {
 				return (aux == _dummy || value < aux->value) ? end() : aux;
 			};
 
-			pair<iterator, bool> insertUni(const value_type& value) {};
+			pair<iterator, bool> insertUni(const value_type& value) {
+				return insertNode<false>(value);
+			};
 
-			iterator insertMulti(const value_type& value) {};
+			iterator insertMulti(const value_type& value) {
+				return insertNode<true>(value).first;
+			};
 
-			size_type erase(const value_type& value) {};
+			size_type erase(const value_type& value) {
+				size_type count = 0;
+				iterator p = find(value);
+				if (p != end()) {
+					do {
+						++count; erase(p++);
+					} 
+					while {
+						p != end() && !(value < *p);
+					}
+				}
+				return count;
+			};
 
-			void erase(iterator it) {};
+			void erase(iterator it) {
+				NodePtr r = it.current;
+				if (r == _dummy->left) { _dummy->left = (++iterator(it).current); }
+				if (r == _dummy->right) { _dummy->right = (--iterator(it).current); }
+				if (r->left == NULL) { transferParent(r, r->right); }
+				else if (r->right == NULL) { transferParent(r, r->left); }
+				else {
+					NodePtr previous = rightMost(r->left);
+					transferParent(previous, previous->left);
+					transferNode(r, previous);
+				}
+				--_size;
+				deleteNode(r);
+			};
 
-			void clear() {};
+			void clear() {
+				clear(_root);
+				_dummy->left = _dummy->right = _dummy;
+				_root = NULL;
+				_size = 0;
+			};
 
 			void balance() {};
 
