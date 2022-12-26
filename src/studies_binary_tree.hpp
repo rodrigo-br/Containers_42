@@ -147,7 +147,7 @@ namespace ft {
 
 			void transferParent(NodePtr x, NodePtr y) {
 				NodePtr xp = x->parent;
-				((x == root) ? root : (xp->right == x) ? xp->right : xp->left) = y;
+				((x == _root) ? _root : (xp->right == x) ? xp->right : xp->left) = y;
 				setParent(y, xp);
 			};
 
@@ -199,7 +199,7 @@ namespace ft {
 				return node;
 			};
 
-			static bool isBalanced(ConstNodePtr, size_type &) {};
+			static bool isBalanced(ConstNodePtr, size_type &) { return true; };
 
 			static void treeToList(NodePtr node, NodePtr &header) {};
 
@@ -265,7 +265,7 @@ namespace ft {
 
 			iterator find(const value_type& value) {
 				NodePtr node = _root;
-				aux = _dummy;
+				NodePtr aux = _dummy;
 				while (node != NULL) {
 					if (node->value < value)
 						node = node->right;
@@ -292,9 +292,9 @@ namespace ft {
 					do {
 						++count; erase(p++);
 					} 
-					while {
-						p != end() && !(value < *p);
-					}
+					while (
+						p != end() && !(value < *p)
+					);
 				}
 				return count;
 			};
@@ -331,11 +331,11 @@ namespace ft {
 				inorder(displayValue());
 			};
 
-			bool isBalanced() const {};
+			bool isBalanced() const { return true; };
 
-			bool isOrdered() const {};
+			bool isOrdered() const { return true; };
 
-			void printOn(ostream &os) const {};
+			void printOn(std::ostream &os) const {};
 
 	}; // class TreeBase
 
