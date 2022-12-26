@@ -3,7 +3,6 @@
 #include "reverse_iterator.hpp"
 #include "algorithm.hpp"
 #include "type_traits.hpp"
-#include "studies_binary_tree.hpp"
 
 /*
 	This main only aims to test the compilation with the version c++98
@@ -12,7 +11,4 @@ int main(void)
 {
 	ft::vector<int> x;
 	(void)x;
-
-	ft::TreeBase<int> t;
-	t.insertUni(10);
 }
