@@ -153,7 +153,7 @@ namespace ft {
 		void push_back(const value_type& val) {
 			if (_capacity == 0) { reserve(1); }
 			else if (_size + 1 > _capacity) {
-				reserve(_size + 1);
+				reserve(_capacity * 2);
 			}
 			_alloc.construct(&_data[_size], val);
 			_size++;

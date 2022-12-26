@@ -10,9 +10,6 @@ namespace ft {
 												typename A::difference_type, PTR, REF> {
 
 	protected:
-		friend TreeBase<T, A>;
-		friend TreeBase<T, A>::const_iterator;
-
 		NodePtr current;
 
 		void inc() {

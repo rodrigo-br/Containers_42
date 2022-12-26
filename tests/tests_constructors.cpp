@@ -6,7 +6,7 @@ TEST_CASE ("Passando array de String first e last no constructor") {
 		ft::vector<std::string> v(std::begin(cavalinho), std::end(cavalinho));
 		std::vector<std::string> v2(std::begin(cavalinho), std::end(cavalinho));
 
-		compare(v, v2);
+		simple_compare(v, v2);
 }
 
 TEST_CASE ("Passando array de int first e last no constructor") {
@@ -14,7 +14,7 @@ TEST_CASE ("Passando array de int first e last no constructor") {
 		ft::vector<int> v(std::begin(cavalinho), std::end(cavalinho));
 		std::vector<int> v2(std::begin(cavalinho), std::end(cavalinho));
 
-		compare(v, v2);
+		simple_compare(v, v2);
 }
 
 TEST_CASE ("Passando <int> size 5 no constructor") {

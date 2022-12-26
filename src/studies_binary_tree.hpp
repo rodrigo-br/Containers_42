@@ -5,6 +5,7 @@
 #include "utility.hpp"
 #include <memory>
 #include <iostream>
+#include <cmath>
 
 namespace ft {
 	template<class T, class Alloc = std::allocator<T> >
@@ -50,7 +51,7 @@ namespace ft {
 
 			NodePtr newNode(NodePtr parent, const value_type& value) {
 				NodePtr n = _alloc.allocate(1);
-				_alloc.construct(&(n->value), value);
+				_alloc.construct(&n->value, value);
 				n->left = n->right = NULL;
 				n->parent = parent;
 				return n;
@@ -201,9 +202,28 @@ namespace ft {
 
 			static bool isBalanced(ConstNodePtr, size_type &) { return true; };
 
-			static void treeToList(NodePtr node, NodePtr &header) {};
+			static void treeToList(NodePtr node, NodePtr &header) {
+				if (node == NULL)
+					return;
+				treeToList(node->right, header);
+				node->right = header;
+				header = node;
+				treeToList(node->left, header);
+			};
 
-			static NodePtr listToTree(NodePtr header, size_type n) {};
+			static NodePtr listToTree(NodePtr header, size_type n) {
+				if (n == 0)
+					return NULL;
+				int nleft = n / 2;
+				NodePtr leftRoot = listToTree(header, nleft);
+				NodePtr root = header;
+				header = header->right;
+				root->left = leftRoot;
+				setParent(leftRoot, root);
+				root->right = listToTree(header, n - 1 - nleft);
+				setParent(root->right, root);
+				return root;
+			};
 
 			iterator getIterator(NodePtr node) { return node; };
 
@@ -321,7 +341,13 @@ namespace ft {
 				_size = 0;
 			};
 
-			void balance() {};
+			void balance() {
+				if (size() <= 2) { return; }
+				NodePtr header = NULL;
+				treeToList(_root, header);
+				_root = listToTree(header, size());
+				_root->parent = _dummy;
+			};
 
 			void displayValue(const value_type& value) const {
 				std::cout << value << ' ';
@@ -331,11 +357,51 @@ namespace ft {
 				inorder(displayValue());
 			};
 
-			bool isBalanced() const { return true; };
+			bool isBalanced() const {
+				int h;
+				return isBalanced(_root, h);
+			 };
 
-			bool isOrdered() const { return true; };
+			bool isBalanced(ConstNodePtr r, int &h) {
+				if (r == NULL) { h = 0; return true; }
+				int hl;
+				if (isBalanced(r->right, h) && isBalanced(r->left, hl) && abs(h - hl) <= 1) {
+					h += (hl > h) ? 2 : 1;
+					return true;
+				}
+				return false;
+			};
 
-			void printOn(std::ostream &os) const {};
+			// template<class Bananinha>
+			// struct TestOrd {
+			// 	bool				&is_order;
+			// 	const value_type	*previous;
+			// 	TestOrd(const value_type &p, bool &o) : previous(&p), is_order(o) {}
+			// 	void operator() (const value_type &v) {
+			// 		if (v < *previous) { is_order = false; }
+			// 		else
+			// 			previous = &v;
+			// 	}
+			// };
+
+			// bool isOrdered() const {
+			// 	if (size() < 2) { return true; }
+			// 	bool is_order = true;
+			// 	inorder(TestOrd<T>(_dummy->left->value, is_order));
+			// 	return is_order;
+			//  };
+
+			void printOn(std::ostream &os) const {
+				printOn(os, _root, 1);
+			};
+
+			void printOn(std::ostream &os, NodePtr node, int n) const {
+				if (node == NULL) { return; }
+				printOn(os, node->left, n + 1);
+				for (int i = 0; i < n; ++i) { os << "  "; }
+				os << node->value << std::endl;
+				printOn(os, node->right, n + 1);
+			};
 
 	}; // class TreeBase
 

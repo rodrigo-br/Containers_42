@@ -12,4 +12,7 @@ int main(void)
 {
 	ft::vector<int> x;
 	(void)x;
+
+	ft::TreeBase<int> t;
+	t.insertUni(10);
 }

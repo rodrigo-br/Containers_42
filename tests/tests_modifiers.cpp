@@ -70,14 +70,18 @@ TEST_CASE("Teste Push back com _size < _capacity") {
 
 TEST_CASE("Teste Push back com _capacity 0 e _size + 1 > _capacity") {
 	ft::vector<int> v1;
+	std::vector<int> v2;
 	v1.push_back(0);
+	v2.push_back(0);
 	v1.push_back(5);
+	v2.push_back(5);
 	v1.push_back(10);
+	v2.push_back(10);
 	v1.push_back(15);
+	v2.push_back(15);
 	v1.push_back(20);
-	for (int i = 0; i < v1.size(); i++) {
-		REQUIRE(i * 5 == v1[i]);
-	}
+	v2.push_back(20);
+	compare(v1, v2);
 }
 
 TEST_CASE("Teste Pop back function") {
@@ -130,7 +134,7 @@ TEST_CASE("Teste Assign function modo fill") {
 	original.assign(7, 100); // 7 ints with a value of 100
 	myvector.assign(7, 100);
 
-	compare(myvector, original);
+	simple_compare(myvector, original);
 }
 
 TEST_CASE("Teste Assign function modo range usando array de int") {
@@ -141,7 +145,7 @@ TEST_CASE("Teste Assign function modo range usando array de int") {
 	original.assign(myints,myints + 3);	// assigning from array.
 	myvector.assign(myints,myints + 3);
 
-	compare(myvector, original);
+	simple_compare(myvector, original);
 }
 
 TEST_CASE("Teste Assign function modo range usando iteradores") {
@@ -160,7 +164,7 @@ TEST_CASE("Teste Assign function modo range usando iteradores") {
 	original_final.assign(it_original, it_original + 5);
 	myvector_final.assign(it_myvector, it_myvector + 5);
 
-	compare(myvector_final, original_final);
+	simple_compare(myvector_final, original_final);
 }
 
 TEST_CASE("Test Swap member function") {

@@ -74,4 +74,12 @@ void compare(ft::vector<T> &v1, std::vector<T> &v2) {
 	REQUIRE(v2.get_allocator() == v1.get_allocator());
 }
 
+template<typename T>
+void simple_compare(ft::vector<T> &v1, std::vector<T> &v2) {
+	for (size_t i = 0; i < v2.size(); i++) {
+		REQUIRE(v2[i] == v1[i]);
+	}
+	REQUIRE(v2.size() == v1.size());
+}
+
 #endif
