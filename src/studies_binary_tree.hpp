@@ -2,10 +2,14 @@
 #define STUDIES_BINARY_TREE_H
 
 #include "iterator_traits.hpp"
+#include "studies_iterator_binary.hpp"
 #include "utility.hpp"
 #include <memory>
 #include <iostream>
 #include <cmath>
+
+template <class T1, class T2>
+    struct pair;
 
 namespace ft {
 	template<class T, class Alloc = std::allocator<T> >
@@ -22,7 +26,7 @@ namespace ft {
 				NodePtr		right;
 				NodePtr		parent;
 			};
-			template<class NodePtr, class Ptr, class Ref> class IT;
+			// template<class NodePtr, class Ptr, class Ref> class IT;
 
 		public:
 			typedef T											value_type;
@@ -33,9 +37,8 @@ namespace ft {
 			typedef typename Alloc::const_pointer				const_pointer;
 			typedef typename Alloc::difference_type				difference_type;
 			typedef typename Alloc::size_type					size_type;
-			typedef IT<NodePtr, pointer, reference>				iterator;
-			typedef IT<
-			ConstNodePtr, const_pointer, const_reference>		const_iterator;
+			typedef tree_iterator<value_type>					iterator;
+			typedef tree_iterator<const value_type>				const_iterator;
 		
 		
 		protected:
@@ -119,12 +122,12 @@ namespace ft {
 							r = r->right;
 						}
 						else {
-							return pair<iterator, bool>(r, false);
+							return pair<iterator, bool>(tree_iterator(r), false);
 						}
 					}
 				}
 				++_size;
-				return pair<iterator, bool>(r, true);
+				return pair<iterator, bool>(tree_iterator(r), true);
 			};
 
 			NodePtr insertLeft(NodePtr node, const value_type& value) {

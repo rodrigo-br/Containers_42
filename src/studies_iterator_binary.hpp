@@ -2,30 +2,39 @@
 #define STUDIES_ITERATOR_BINARY_H
 
 #include "studies_binary_tree.hpp"
+#include "iterator_traits.hpp"
  
+template<class T, class Alloc = std::allocator<T> >class TreeBase;
+
 namespace ft {
-	template <class T, class A>
-	template<class NodePtr, class PTR, class REF>
-	class TreeBase<T, A>::IT : 	public iterator<std::bidirectional_iterator_tag, T,
-												typename A::difference_type, PTR, REF> {
+	template <typename T> class tree_iterator {
+
+	public:
+		typedef tree_iterator<T>						iterator;
+		typedef tree_iterator<const T>					const_iterator;
+		typedef std::bidirectional_iterator_tag			iterator_category;
+		typedef T										value_type;
+		typedef T*										pointer;
+		typedef T&										reference;
+		typedef std::ptrdiff_t							difference_type;
 
 	protected:
-		NodePtr current;
+		pointer current;
 
 		void inc() {
 			if (current->right == NULL) {
-				NodePtr ptr = current;
+				pointer ptr = current;
 				while ((current = current->parent)->right == ptr) {
 					ptr = current;
 				}
 			}
 			else
-				current = TreeBase<T, A>::leftMost(current->right);
+				current = TreeBase<T>::leftMost(current->right);
 		};
 
 		void dec() {
 			if (current->left == NULL) {
-				NodePtr ptr = current;
+				pointer ptr = current;
 				while ((current = current->parent)->left == ptr) {
 					ptr = current;
 				}
@@ -34,57 +43,57 @@ namespace ft {
 				if (current->parent  == current)
 					current = current->right;
 				else
-					current = TreeBase<T, A>::rightMost(current->left);
+					current = TreeBase<T>::rightMost(current->left);
 			}
 		};
 		
-		IT(NodePtr node) : current(node) {};
 
 	public:
-		IT() {};
+		tree_iterator() {};
 
-		template<class NP, class P, class R>
-		IT(const IT<NP, P, R> it) : current(it.current) {};
+		tree_iterator(pointer node) : current(node) {};
 
-		IT& operator++() {
+		tree_iterator(const iterator &it) : current(it.current) {};
+
+		iterator& operator++() {
 			inc();
 			return *this;
 		};
 
-		IT operator++(int) {
-			IT tmp(*this);
+		iterator operator++(int) {
+			iterator tmp(*this);
 			inc();
 			return tmp;
 		};
 
-		IT& operator--() {
+		iterator& operator--() {
 			dec();
 			return *this;
 		};
 
-		IT operator--(int) {
-			IT tmp(*this);
+		iterator operator--(int) {
+			iterator tmp(*this);
 			dec();
 			return tmp;
 		};
 
-		REF operator*() const {
+		reference operator*() const {
 			return current->value;
 		};
 
-		PTR operator->() const {
+		pointer operator->() const {
 			return &(current->value);
 		};
 
-		bool operator==(IT it) const {
+		bool operator==(iterator it) const {
 			return current == it.current;
 		};
 
-		bool operator!=(IT it) const {
+		bool operator!=(iterator it) const {
 			return !(*this == it);
 		};
 
-	}; // class TreeBase<T, A>::IT
+	}; // iterator
 
 }; // namespace ft	
 
