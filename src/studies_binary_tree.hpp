@@ -43,38 +43,27 @@ namespace ft {
 			NodePtr		_dummy;
 			size_type	_size;
 
-			NodePtr newNode(const value_type& value) {
-				NodePtr node = _alloc.allocate(1);
-				_alloc.construct(node, Node());
-				node->value = value;
-				node->left = _dummy;
-				node->right = _dummy;
-				node->parent = _dummy;
-				return node;
+			NodePtr newNode() {
+				NodePtr n = _alloc.allocate(1);
+				return n->left = n->right = n->parent = n;
 			};
 
-			NodePtr newNode(const value_type& value, NodePtr p) {
-				NodePtr node = _alloc.allocate(1);
-				_alloc.construct(node, Node());
-				node->value = value;
-				node->left = _dummy;
-				node->right = _dummy;
-				node->parent = p;
-				return node;
+			NodePtr newNode(NodePtr parent, const value_type& value) {
+				NodePtr n = _alloc.allocate(1);
+				_alloc.construct(&(n->value), value);
+				n->left = n->right = NULL;
+				n->parent = parent;
+				return n;
 			};
 
-			NodePtr newNode(ConstNodePtr p) {
-				NodePtr node = _alloc.allocate(1);
-				_alloc.construct(node, Node());
-				node->value = p->value;
-				node->left = p->left;
-				node->right = p->right;
-				node->parent = p->parent;
-				return node;
+			NodePtr newNode(ConstNodePtr x) {
+				NodePtr n = _alloc.allocate(1);
+				_alloc.construct(&(n->value), x->value);
+				return n;
 			};
 
 			void deleteNode(NodePtr node) {
-				_alloc.destroy(node);
+				_alloc.destroy(&(node->value));
 				_alloc.deallocate(node, 1);
 			};
 
@@ -170,11 +159,33 @@ namespace ft {
 				setParent(y->right, y);
 			};
 
-			void clear(NodePtr node) {};
+			void clear(NodePtr node) {
+				if (node == NULL)
+					return;
+				clear(node->left);
+				clear(node->right);
+				deleteNode(node);
+			};
 
-			NodePtr copy(ConstNodePtr node) {};
+			NodePtr copy(ConstNodePtr node) {
+				if (node == NULL)
+					return NULL;
+				NodePtr r = newNode(node);
+				r->left = copy(node->left);
+				setParent(r->left, r);
+				r->right = copy(node->right);
+				setParent(r->right, r);
+				return r;
+			};
 
-			void copy(const TreeBase &x) {};
+			void copy(const TreeBase &x) {
+				if (x.empty()) { return; }
+				_root = copy(x._root);
+				_root->parent = _dummy;
+				_dummy->left = leftMost(_root);
+				_dummy->right = rightMost(_root);
+				_size = x.size();
+			};
 
 			template<class NP> static NP rightMost(NP node) {
 				while (node->right != NULL)
@@ -200,13 +211,26 @@ namespace ft {
 
 
 		public:
-			TreeBase() : _alloc(allocator_type), _root(NULL), _dummy(newNode()), _size(0) {};
+			TreeBase(const allocator_type &alloc = allocator_type()) :
+				_alloc(alloc), _root(NULL), _dummy(newNode()), _size(0) {};
 
-			TreeBase(const TreeBase &x) {};
+			TreeBase(const TreeBase &x) :
+				_alloc(x.get_allocator()), _root(NULL), _dummy(newNode()), _size(0) {
+				copy(x);
+			};
 
-			TreeBase &operator=(const TreeBase &x) {};
+			TreeBase &operator=(const TreeBase &x) {
+				if (this != &x) {
+					clear();
+					copy(x);
+				}
+				return *this;
+			};
 
-			~TreeBase() {};
+			~TreeBase() {
+				clear(_root);
+				_alloc.deallocate(_dummy, 1);
+			};
 
 			allocator_type get_allocator() const { return _alloc; };
 
