@@ -15,7 +15,7 @@ namespace ft {
 			typedef T*									pointer;
 			typedef T&									reference;
 			typedef std::ptrdiff_t						difference_type;
-			
+
 		private:
 			pointer	_ptr;
 
@@ -24,7 +24,7 @@ namespace ft {
 /******************************************************************************/
 /*					Constructors & Destructor							      */
 /******************************************************************************/
-			
+
 			random_access_iterator(): _ptr(NULL) {};
 
 			explicit random_access_iterator(pointer ptr): _ptr(ptr) {};
