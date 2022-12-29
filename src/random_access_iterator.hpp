@@ -4,23 +4,21 @@
 #include "iterator_traits.hpp"
 
 namespace ft {
+#define TRAITS ft::iterator_traits<T>
 	template <typename T> class random_access_iterator :
-		public ft::iterator<ft::random_access_iterator_tag, T>
+		public ft::iterator<ft::random_access_iterator_tag, T>, public TRAITS
 	{
 
-		typedef typename ft::iterator_traits<T> traits;
-
 		public:
-
-			typedef	T									iterator_type;
-			typedef typename traits::iterator_category	iterator_category;
-			typedef typename traits::value_type			value_type;
-			typedef typename traits::pointer			pointer;
-			typedef typename traits::reference			reference;
-			typedef typename traits::difference_type	difference_type;
+			IMPORT_TRAIT(iterator_category);
+			IMPORT_TRAIT(value_type);
+			IMPORT_TRAIT(pointer);
+			IMPORT_TRAIT(reference);
+			IMPORT_TRAIT(difference_type);
+			typedef	T		iterator_type;
 
 		private:
-			iterator_type _ptr;
+			iterator_type	_ptr;
 
 		public:
 
@@ -115,11 +113,11 @@ namespace ft {
 				return (*this);
 			};
 
-			int operator+(random_access_iterator& rhs) {
+			int operator+(const random_access_iterator& rhs) {
 				return (this->_ptr + rhs._ptr);
 			};
 
-			int operator-(random_access_iterator& rhs) {
+			int operator-(const random_access_iterator& rhs) {
 				return (this->_ptr - rhs._ptr);
 			};
 
@@ -135,6 +133,7 @@ namespace ft {
 				return (this->_ptr);
 			};
 	};
+	#undef TRAITS
 
 /******************************************************************************/
 /*						Non-member Operators							      */

@@ -325,11 +325,11 @@ namespace ft {
 
 		iterator begin() { return iterator(_data); };
 
-		const_iterator begin() const { return iterator(_data); };
+		const_iterator begin() const { return const_iterator(_data); };
 
 		iterator end() { return iterator(_data + _size); };
 
-		const_iterator end() const { return iterator(_data + _size); };
+		const_iterator end() const { return const_iterator(_data + _size); };
 
 		reverse_iterator rbegin(void) {	return reverse_iterator(end()); };
 

@@ -2,14 +2,14 @@
 #define CONTAINER_H
 
 namespace ft {
-
+#define ALLOC typename Alloc
 	template < class Type, class Alloc,
-			class Ref		=	typename Alloc::reference,
-			class ConstRef	=	typename Alloc::const_reference,
-			class Ptr		=	typename Alloc::pointer,
-			class ConstPtr	=	typename Alloc::const_pointer,
-			class Dif		=	typename Alloc::difference_type,
-			class Size		=	typename Alloc::size_type >
+			class Ref		=	ALLOC::reference,
+			class ConstRef	=	ALLOC::const_reference,
+			class Ptr		=	ALLOC::pointer,
+			class ConstPtr	=	ALLOC::const_pointer,
+			class Dif		=	ALLOC::difference_type,
+			class Size		=	ALLOC::size_type >
 	struct Container {
 		typedef Type			value_type;
 		typedef Alloc			allocator_type;

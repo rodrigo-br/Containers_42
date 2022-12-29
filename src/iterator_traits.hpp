@@ -42,6 +42,7 @@ Hierarquia:
 */
 
 namespace ft {
+
 	struct output_iterator_tag {};
 
 	struct input_iterator_tag {};
@@ -71,13 +72,14 @@ namespace ft {
 /*
 		Iterator Traits para classes iteradoras
 */
+#define IMPORT_ITERATOR(TYPE) typedef typename Iterator::TYPE TYPE
 	template <typename Iterator>
 	struct iterator_traits {
-		typedef typename Iterator::iterator_category 	iterator_category;
-		typedef typename Iterator::value_type 			value_type;
-		typedef typename Iterator::difference_type 		difference_type;
-		typedef typename Iterator::pointer 				pointer;
-		typedef typename Iterator::reference 			reference;
+		IMPORT_ITERATOR(iterator_category);
+		IMPORT_ITERATOR(value_type);
+		IMPORT_ITERATOR(difference_type);
+		IMPORT_ITERATOR(pointer);
+		IMPORT_ITERATOR(reference);
 	};
 
 /*
@@ -126,6 +128,8 @@ namespace ft {
 	inline unsigned _distance(Iterator first, Iterator last, random_access_iterator_tag) {
 		return last - first;
 	};
+
+#define IMPORT_TRAIT(TYPE) typedef typename TRAITS::TYPE TYPE
 
 };//namespace ft 
 
