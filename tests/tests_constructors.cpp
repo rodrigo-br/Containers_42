@@ -30,3 +30,10 @@ TEST_CASE ("Passando int no constructor vazio") {
 
 		compare(v, v2);
 }
+
+TEST_CASE ("Copy constructor") {
+	ft::vector<int> v1(5);
+	ft::vector<int> v2(v1);
+
+	compare(v1, v2);
+}

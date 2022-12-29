@@ -81,7 +81,7 @@ TEST_CASE("Teste Push back com _capacity 0 e _size + 1 > _capacity") {
 	v2.push_back(15);
 	v1.push_back(20);
 	v2.push_back(20);
-	compare(v1, v2);
+	simple_compare(v1, v2);
 }
 
 TEST_CASE("Teste Pop back function") {
@@ -271,3 +271,19 @@ TEST_CASE("Test Insert string com iteradores") {
 	compare(myvector, original);
 }
 
+TEST_CASE ("Test clear") {
+	std::vector<int> original;
+	ft::vector<int> myvector;
+
+	original.push_back(1);
+	original.push_back(2);
+	original.push_back(3);
+	myvector.push_back(1);
+	myvector.push_back(2);
+	myvector.push_back(3);
+
+	original.clear();
+	myvector.clear();
+
+	simple_compare(myvector, original);
+}

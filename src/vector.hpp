@@ -43,6 +43,11 @@ namespace ft {
 /*					Constructors & Destructor							      */
 /******************************************************************************/
 
+		/**
+		 * @brief Empty constructor
+		 * 
+		 * @param alloc default
+		 */
 		explicit vector(const allocator_type &alloc = allocator_type()) :
 			_alloc(alloc), _size(0), _capacity(0), _data(_alloc.allocate(0)) {};
 
@@ -50,7 +55,10 @@ namespace ft {
 		explicit vector(size_type size,
 						const value_type &value = value_type(),
 						const allocator_type &alloc = allocator_type()) :
-			_alloc(alloc), _size(0), _capacity(size), _data(_alloc.allocate(_capacity)) {
+			_alloc(alloc), _size(0), _capacity(size) {
+				if (size > max_size()) { throw std::length_error("cavalinho"); }
+				_data = _alloc.allocate(_capacity);
+				if (!_data) { throw std::bad_alloc(); }
 				for (size_type i = 0; i < _capacity; i++) {
 					_alloc.construct(&_data[i], value);
 					_size++;
@@ -65,6 +73,18 @@ namespace ft {
 					assign(first, last);
 				};
 
+		/**
+		 * @brief Copy constructor
+		 * 
+		 * @param other another vector to be copied
+		 */
+		vector(const vector &other) : _alloc(other.get_allocator()),
+			_size(other.size()), _capacity(other.capacity()) {
+				_data = _alloc.allocate(_capacity);
+				if (!_data) { throw std::bad_alloc(); }
+				std::uninitialized_copy(other.begin(), other.end(), _data);
+			};
+
 		~vector() { _alloc.deallocate(_data, _capacity); };
 
 /******************************************************************************/
@@ -78,6 +98,7 @@ namespace ft {
 			_size = other.size();
 			_capacity = other.capacity();
 			_data = _alloc.allocate(_capacity);
+			if (!_data) { throw std::bad_alloc(); }
 			for (size_type i = 0; i < _size; i++) {
 				_alloc.construct(&_data[i], other[i]);
 			}
@@ -85,10 +106,12 @@ namespace ft {
 		};
 
 		const_reference operator[](size_type index) const {
+			if (index >= _size) { throw std::out_of_range("cavalinho"); }
 			return _data[index];
 		};
 
 		reference operator[](size_type index) {
+			if (index >= _size) { throw std::out_of_range("cavalinho"); }
 			return _data[index];
 		};
 
@@ -101,13 +124,12 @@ namespace ft {
 			if (new_cap <= _capacity) { return ; }
 
 			pointer newData = _alloc.allocate(new_cap);
-			std::uninitialized_copy(_data, _data + _size, newData);
-
+			if (!newData) { throw std::bad_alloc(); }
+			std::uninitialized_copy(begin(), end(), newData);
 			for (size_type i = 0; i < _size; i++) {
 				_alloc.destroy(&_data[i]);
 			}
 			_alloc.deallocate(_data, _capacity);
-
 			_data = newData;
 			_capacity = new_cap;
 		}
@@ -118,15 +140,29 @@ namespace ft {
 
 		size_type max_size(void) const { return _alloc.max_size(); };
 
-		bool empty(void) const { return static_cast<bool>(!_size); };
+		bool empty(void) const { return _size == 0; };
 
-		void shrink_to_fit(void) {
-			_capacity = _size;
-		};
+		void shrink_to_fit(void) { _capacity = _size; };
 
+		/**
+		 * @brief Resizes the container so that it contains n elements.
+		 * If n is smaller than the current container size, the content is reduced
+		 * to its first n elements, removing those beyond (and destroying them).
+		 * If n is greater than the current container size, the content is expanded
+		 * by inserting at the end as many elements as needed to reach a size of n.
+		 * If n is also greater than the current container capacity,
+		 * an automatic reallocation of the allocated storage space takes place.
+		 * Notice that this function changes the actual content of the container
+		 * by inserting or erasing elements from it.
+		 * 
+		 * @param n new number of elements in the container
+		 * @param val If val is specified, the new elements are initialized as
+		 * copies of val, otherwise, they are value-initialized.
+		 */
 		void resize (size_type n, value_type val = value_type()) {
 			value_type *newData;
 			newData = _alloc.allocate(n);
+			if (!newData) { throw std::bad_alloc(); }
 			size_type max_size = n > _size ? _size : n;
 			_size = 0;
 			for (size_type i = 0; i < max_size; i++) {
@@ -149,50 +185,51 @@ namespace ft {
 /*								Modifiers								      */
 /******************************************************************************/
 
+		/**
+		 * @brief Destroy all the elements of the vector and set the size to 0.
+		 * 
+		 */
 		void clear(void) {
-			erase(begin(), end());
+			for (iterator it = begin(); it != end(); it++) {
+				_alloc.destroy(it.base());
+			}
+			_size = 0;
 		};
 
+		/**
+		 * @brief Inserts a new element at the end of the vector, after its current
+		 * last element.
+		 * 
+		 * @param val Value to be copied (or moved) to the new element.
+		 */
 		void push_back(const value_type& val) {
-			if (_capacity == 0) { reserve(1); }
-			else if (_size + 1 > _capacity) {
-				reserve(_capacity * 2);
-			}
-			_alloc.construct(&_data[_size], val);
-			_size++;
+			insert(end(), val);
 		};
 
+		/**
+		 * @brief Removes the last element in the vector
+		 * 
+		 */
 		void pop_back(void) {
-			if (_size == 0)
-				return ;
-			_size--;
-			_alloc.destroy(&_data[_size]);
+			erase(end() - 1);
 		};
 
+		/**
+		 * @brief Moves the contents from position + 1, end() to position, end() -1
+		 * and destroys the last element.
+		 * 
+		 */
 		iterator erase(iterator position) {
-			iterator return_iterator = position;
-			iterator copy_iterator = position;
-			size_type i = 0;
-			for (; i < _size; i++) {
-				if (copy_iterator == position) {
-					if (!ft::is_integral<value_type>::value)
-						_alloc.destroy(&_data[i]);
-					break ;
-				}
-			}
-			if (i < _size) {
-				while (copy_iterator != (end() - 1)) {
-					position++;
-					*copy_iterator = *position;
-					copy_iterator++;
-				}
-				_size--;
-			}
-			return return_iterator;
+			if (position == end())
+				return position;
+			std::copy(position + 1, end(), position);
+			_alloc.destroy(end().base());
+			_size--;
+			return position;
 		};
 
 		iterator erase(iterator first, iterator last) {
-			if (first == end())
+			if (first == end() || first == last)
 				return first;
 			iterator return_iterator = first;
 			std::copy(last.base(), end().base(), first.base());
@@ -206,6 +243,11 @@ namespace ft {
 			return return_iterator;
 		};
 
+		/**
+		 * @brief assigns new contents to the vector, replacing its current contents,
+		 * and modifying its size accordingly.
+		 * 
+		 */
 		void assign(size_type n, const value_type& val) {
 			clear();
 			for (size_type i = 0; i < n; i++) {
@@ -213,12 +255,23 @@ namespace ft {
 			}
 		};
 
+		/**
+		 * @brief Assigns new contents to the vector, replacing its current contents,
+		 * and modifying its size accordingly.
+		 * The use of enable_if is to avoid the function to be called when the
+		 * iterator is an integral type.
+		 * 
+		 */
 		template <class Iterator>
 		typename enable_if<!is_integral<Iterator>::value, void>::type
 		assign(Iterator first, Iterator last) {
 			_assign(first, last, typename iterator_traits<Iterator>::iterator_category());
 		};
 
+		/**
+		 * @brief Auxiliar assign' function for random access iterators.
+		 * 
+		 */
 		template <class Iterator>
 		void _assign(Iterator first, Iterator last, std::input_iterator_tag) {
 			clear();
@@ -228,19 +281,20 @@ namespace ft {
 			}
 		};
 
+		/**
+		 * @brief If the allocators are the same, swap the attributes of the vectors.
+		 * Use trivial swap otherwise.
+		 * 
+		 */
 		void swap (vector& x) {
-			size_type	temp_size = x._size;
-			size_type	temp_capacity = x._capacity;
-			pointer		temp_data = x._data;
-
-			x._size = _size;
-			x._capacity = _capacity;
-			x._data = _data;
-
-			_size = temp_size;
-			_capacity = temp_capacity;
-			_data = temp_data;
-		}
+			if (this == &x) { return ;}
+			if (_alloc == x._alloc) {
+				std::swap(_size, x._size);
+				std::swap(_capacity, x._capacity);
+				std::swap(_data, x._data);
+			}
+			else { std::swap(*this, x); }
+		};
 
 		iterator insert(iterator pos, const T& value) {
 			size_type index = pos - begin();
@@ -303,17 +357,35 @@ namespace ft {
 /*								Element access								  */
 /******************************************************************************/
 
-		reference at (size_type n) { return _data[n]; };
+		reference at (size_type n) { 
+			if (n >= _size) { throw std::out_of_range("cavalinho"); }
+			return _data[n]; 
+		};
 
-		const_reference at (size_type n) const { return _data[n]; };
+		const_reference at (size_type n) const {
+			if (n >= _size) { throw std::out_of_range("cavalinho"); }
+			return _data[n]; 
+		};
 
-		reference front(void) { return _data[0]; };
+		reference front(void) {
+			if (_size == 0) { throw std::out_of_range("cavalinho"); }
+			return _data[0];
+		};
 		
-		const_reference front(void) const { return _data[0]; };
+		const_reference front(void) const { 
+			if (_size == 0) { throw std::out_of_range("cavalinho"); }
+			return _data[0]; 
+		};
 
-		reference back(void) { return _data[_size - 1]; };
+		reference back(void) {
+			if (_size == 0) { throw std::out_of_range("cavalinho"); }
+			return _data[_size - 1];
+		};
 		
-		const_reference back(void) const { return _data[_size - 1]; };
+		const_reference back(void) const {
+			if (_size == 0) { throw std::out_of_range("cavalinho"); }
+			return _data[_size - 1];
+		};
 
 		value_type* data(void) { return _data; };
 		
@@ -335,9 +407,9 @@ namespace ft {
 
 		const_reverse_iterator rbegin(void) const {	return const_reverse_iterator(end()); };
 
-		reverse_iterator rend(void) {	return reverse_iterator(begin()); };
+		reverse_iterator rend(void) { return reverse_iterator(begin()); };
 
-		const_reverse_iterator rend(void) const {	return const_reverse_iterator(begin()); };
+		const_reverse_iterator rend(void) const { return const_reverse_iterator(begin()); };
 	};//class vector
 	#undef CONTAINER
 
