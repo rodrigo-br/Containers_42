@@ -113,6 +113,7 @@ namespace ft{
 		};
 
 	}; //reverse_iterator
+	#undef TRAITS
 
 /******************************************************************************/
 /*					NON-MEMBER FUNCTIONS									  */

@@ -59,8 +59,8 @@ class RBTree {
 
 
 
-}// class RBTree
+};// class RBTree
 
-}// namespace ft
+};// namespace ft
 
 #endif
