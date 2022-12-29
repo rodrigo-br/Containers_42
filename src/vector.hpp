@@ -25,17 +25,17 @@ namespace ft {
 		IMPORT_TYPE(const_reference);
 		IMPORT_TYPE(pointer);
 		IMPORT_TYPE(const_pointer);
-		typedef typename ft::random_access_iterator<value_type>	iterator;
-		typedef
-		typename ft::random_access_iterator<const value_type>	const_iterator;
-		typedef ft::reverse_iterator<iterator>					reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+		typedef ft::random_access_iterator<pointer>			iterator;
+		typedef ft::random_access_iterator<const_pointer>	const_iterator;
+		typedef ft::reverse_iterator<iterator>				reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 
 	protected:
 		allocator_type	_alloc;
 		size_type		_size;
 		size_type		_capacity;
 		pointer			_data;
+		
 
 	public:
 
@@ -242,7 +242,7 @@ namespace ft {
 			_data = temp_data;
 		}
 
-		iterator insert(const_iterator pos, const T& value) {
+		iterator insert(iterator pos, const T& value) {
 			size_type index = pos - begin();
 			if (_size + 1 > _capacity) {
 				reserve(_size + 1);
@@ -256,7 +256,7 @@ namespace ft {
 			return begin() + index;
 		};
 
-		iterator insert(const_iterator pos, size_type count, const T& value) {
+		iterator insert(iterator pos, size_type count, const T& value) {
 			size_type index = pos - begin();
 			if (_size + count > _capacity) {
 				reserve(_size + count);
@@ -273,7 +273,7 @@ namespace ft {
 		};
 
 		template<class InputIt>
-		iterator insert(const_iterator pos, InputIt first, InputIt last,
+		iterator insert(iterator pos, InputIt first, InputIt last,
 						typename enable_if<!is_integral<InputIt>::value>::type* = 0) {
 			size_type index = pos - begin();
 			if (_size + (last - first) > _capacity) {

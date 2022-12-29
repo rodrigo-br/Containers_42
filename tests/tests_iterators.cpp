@@ -5,6 +5,41 @@ TEST_CASE("Testando iterator_traits category usando typeid") {
 	REQUIRE(typeid(traits::iterator_category)==typeid(std::random_access_iterator_tag));
 }
 
+TEST_CASE("Testando random_access_iterator member functions") {
+	int array[] = {1, 2, 3, 4, 5};
+	int *ptr = array;
+	ft::random_access_iterator<int *> it(ptr);
+	
+	REQUIRE(it.base() == ptr);
+	REQUIRE(*it == 1);
+	REQUIRE(*(it + 1) == 2);
+	REQUIRE(*(++it) == 2);
+	REQUIRE(*(it++) == 2);
+	REQUIRE(*it == 3);
+	REQUIRE(*(it - 1) == 2);
+	REQUIRE(*(--it) == 2);
+	REQUIRE(*(it--) == 2);
+	REQUIRE(*(it + 2) == 3);
+	REQUIRE(it[2] == 3);
+}
+
+TEST_CASE("Testando random_access_iterator NON-member functions") {
+	int array[] = {1, 2, 3, 4, 5};
+	int *ptr = array;
+	ft::random_access_iterator<int *> it(ptr);
+	ft::random_access_iterator<int *> it2(ptr + 2);
+	ft::random_access_iterator<int *> it3(ptr + 3);
+	
+	REQUIRE(it == it);
+	REQUIRE(it != it2);
+	REQUIRE(it < it2);
+	REQUIRE(it <= it2);
+	REQUIRE(it2 > it);
+	REQUIRE(it2 >= it);
+	REQUIRE(it2 - it == 2);
+	REQUIRE(it3 - it2 == 1);
+}
+
 TEST_CASE("Testando random_access_iterator ") {
 	int array[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
