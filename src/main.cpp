@@ -6,7 +6,6 @@
 #include "TreeBase.hpp"
 #include "Tree.hpp"
 
-typedef ft::TreeBase<int> Tree;
 /*
 	This main only aims to test the compilation with the version c++98
 */
@@ -14,6 +13,6 @@ int main(void)
 {
 	ft::vector<int> x;
 	(void)x;
-	Tree t;
-	t.insertUni(10);
+	ft::TreeBase<int> t;
+	(void)t;
 }

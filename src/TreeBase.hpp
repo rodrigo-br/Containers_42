@@ -34,6 +34,7 @@
 #include "type_traits.hpp"
 #include "iterator_traits.hpp"
 #include "bidirectional_iterator.hpp"
+#include <cmath>
 
 namespace ft {
 #define CONTAINER ft::Container<T, Alloc>
@@ -52,34 +53,35 @@ namespace ft {
 		
 		protected:
 			struct													Node;
-			typedef typename Alloc::template rebind<Node>::other	ANode;
+			typedef typename Alloc::template rebind<Node>::other 	ANode;
 			typedef typename ANode::pointer							NodePtr;
 			typedef typename ANode::const_pointer					ConstNodePtr;
 			struct Node {
-				T			value;
+				value_type	value;
 				NodePtr		parent;
 				NodePtr		left;
 				NodePtr		right;
 			};
-			ANode		alloc;
-			size_type	_size;
-			NodePtr		root;
-			NodePtr		dummy;
+			ANode			alloc;
+			allocator_type	constr;
+			size_type		_size;
+			NodePtr			root;
+			NodePtr			dummy;
+
+		public:
 			typedef ft::bidirectional_iterator<NodePtr>				iterator;
 			typedef ft::bidirectional_iterator<ConstNodePtr>		const_iterator;
 			typedef ft::reverse_iterator<iterator>					reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
-
-		public:
 
 			NodePtr newNode() {
 				NodePtr node = alloc.allocate(1);
 				return node->left = node->right = node->parent = node;
 			};
 
-			NodePtr newNode(NodePtr parent, const T &value) {
+			NodePtr newNode(NodePtr parent, const value_type &value) {
 				NodePtr node = alloc.allocate(1);
-				alloc.construct(&node->value, value);
+				constr.construct(&node->value, value);
 				node->left = node->right = NULL;
 				node->parent = parent;
 				return node;
@@ -87,13 +89,12 @@ namespace ft {
 
 			NodePtr newNode(ConstNodePtr parent) {
 				NodePtr node = alloc.allocate(1);
-				alloc.construct(&(node->value), parent->value);
+				constr.construct(&(node->value), parent->value);
 				return node;
 			};
 
 			void deleteNode(NodePtr node) {
-				if (ft::is_integral<value_type>::value == false)
-					alloc.destroy(node->value);
+				constr.destroy(&(node->value));
 				alloc.deallocate(node, 1);
 			};
 
@@ -118,7 +119,7 @@ namespace ft {
 				visit(node->value);
 			};
 
-			template<bool MULTI> pair<iterator, bool> insertNode(const T &value) {
+			template<bool MULTI> pair<iterator, bool> insertNode(const value_type &value) {
 				NodePtr node;
 				if (root == NULL)
 					node = root = dummy->left = dummy->right = newNode(dummy, value);
@@ -147,14 +148,14 @@ namespace ft {
 				return pair<iterator, bool>(iterator(node), true);
 			};
 
-			NodePtr insertLeft(NodePtr node, const T &value) {
+			NodePtr insertLeft(NodePtr node, const value_type &value) {
 				node->left = newNode(node, value);
 				if (node == dummy->left)
 					dummy->left = node->left;
 				return node->left;
 			};
 
-			NodePtr insertRight(NodePtr node, const T &value) {
+			NodePtr insertRight(NodePtr node, const value_type &value) {
 				node->right = newNode(node, value);
 				if (node == dummy->right)
 					dummy->right = node->right;
@@ -202,19 +203,36 @@ namespace ft {
 
 			// static bool isBalanced(ConstNodePtr node, int &height) {};
 
-			// static void treeToList(NodePtr node, NodePtr &head) {};
+			static void treeToList(NodePtr node, NodePtr &head) {
+				if (node == NULL) { return; };
+				treeToList(node->right, head);
+				node->right = head;
+				head = node;
+				treeToList(node->left, head);
+			};
 
-			// static NodePtr listToTree(NodePtr &head, size_type size) {};
+			static NodePtr listToTree(NodePtr &head, size_type size) {
+				if (size == 0) { return NULL; };
+				int half = size / 2;
+				NodePtr left = listToTree(head, half);
+				NodePtr root = head;
+				head = head->right;
+				root->left = left;
+				setParent(root->left, root);
+				root->right = listToTree(head, size - 1 - half);
+				setParent(root->right, root);
+				return root;
+			};
 
 			iterator getIterator(NodePtr node) { return iterator(node); };
 
 			NodePtr getNode(iterator i) { return i.base(); };
 
 			TreeBase(const allocator_type &a = allocator_type()) :
-				alloc(a), _size(0), root(NULL), dummy(newNode()) {};
+				alloc(a), constr(a), _size(0), root(NULL), dummy(newNode()) {};
 			
 			TreeBase(const TreeBase &x) :
-				alloc(x.get_allocator()), root(NULL), _size(0), dummy(newNode()) {
+				constr(x.get_allocator()), alloc(x.get_allocator()), root(NULL), _size(0), dummy(newNode()) {
 					copy(x);
 				};
 
@@ -231,7 +249,7 @@ namespace ft {
 				return *this;
 			};
 
-			allocator_type get_allocator() const { return alloc; };
+			allocator_type get_allocator() const { return constr; };
 
 			template<class Visit> void preorder(Visit visit) const { preorder(root, visit); };
 
@@ -273,11 +291,11 @@ namespace ft {
 				return (aux == dummy || value < aux->value) ? end() : iterator(aux);
 			};
 
-			pair<iterator, bool> insertUni(const T &value) {
+			pair<iterator, bool> insertUni(const value_type &value) {
 				return insertNode<false>(value);
 			};
 
-			iterator insertMulti(const T &value) {
+			iterator insertMulti(const value_type &value) {
 				return insertNode<true>(value).first;
 			};
 
@@ -297,7 +315,7 @@ namespace ft {
 				return node;
 			};
 
-			size_type erase(const T &value) {
+			size_type erase(const value_type &value) {
 				size_type count = 0;
 				iterator p = find(value);
 				if (p != end()) {
@@ -335,17 +353,52 @@ namespace ft {
 				_size = 0;
 			};
 
-			// void balance() {};
+			void balance() {
+				if (size() <= 2) { return ; }
+				NodePtr head = NULL;
+				treeToList(root, head);
+				root = listToTree(head, size());
+				root->parent = dummy;
+			};
 
 			void display() const {
 				inorder(displayValue<T>());
 			};
 
-			// bool isOrded() const {};
+			bool isOrded() const;
 
-			// bool isBalanced() const {};
+			bool isBalanced() const {
+				int height;
+				return isBalanced(root, height);
+			};
 
-			// void printOn(std::ostream &os) const {};
+			bool isBalanced(NodePtr node, int &height) const {
+				if (node == NULL) {
+					height = 0;
+					return true;
+				}
+				int leftHeight;
+				if (isBalanced(node->right, height) && isBalanced(node->left, leftHeight)
+					&& abs(leftHeight - height) <= 1) {
+						height += (leftHeight > height ? 2 : 1);
+						return true;
+				}
+				return false;
+			};
+
+			void printOn(std::ostream &os) const {
+				printOn(os, root, 1);
+			};
+
+			void printOn(std::ostream &os, NodePtr node, int level) const {
+				if (node == NULL) { return ; }
+				printOn(os, node->left, level + 1);
+				for (int i = 0; i < level; ++i) {
+					os << "  ";
+				}
+				os << node->value << std::endl;
+				printOn(os, node->right, level + 1);
+			};
 
 			template<class Tr>
 			void displayValue(const Tr &value) {
@@ -354,6 +407,25 @@ namespace ft {
 
 
 	};//class TreeBase
+
+//Obj Func
+template <class T> struct TestOrd {
+	bool &is_order;
+	const T *previous;
+	TestOrd(const T &p, bool &o) : is_order(o), previous(&p) {}
+	void operator() (const T &e) {
+		if (e < *previous) is_order = false;
+		else previous = &e;
+	}
+};
+
+template<class T, class A>
+bool TreeBase<T,A>::isOrded() const {
+	if (size() < 2) return true;
+	bool is_order = true;
+	TreeBase::inorder( TestOrd<T>(dummy->left->value, is_order) );
+	return is_order;
+}
 
 };//namespace ft
 
