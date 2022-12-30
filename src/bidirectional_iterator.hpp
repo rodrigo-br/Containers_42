@@ -7,7 +7,7 @@
 
 namespace ft {
 #define TRAITS ft::iterator_traits<T>
-	template <typename T, typename Pointer> class bidirectional_iterator :
+	template <typename T> class bidirectional_iterator :
 		public ft::iterator<ft::bidirectional_iterator_tag, T>, public TRAITS
 	{
 
@@ -21,7 +21,7 @@ namespace ft {
 
 		private:
 			iterator_type	_ptr;
-			Pointer			_t_ptr;
+			pointer			_t_ptr;
 
 		public:
 
@@ -54,7 +54,7 @@ namespace ft {
 
 			void increment() {
 				if (_t_ptr->right == NULL) {
-					Pointer ptr = _t_ptr;
+					pointer ptr = _t_ptr;
 					while ((_t_ptr = _t_ptr->parent)->right == ptr) {
 						ptr = _t_ptr;
 					}
@@ -63,7 +63,7 @@ namespace ft {
 				}
 			};
 
-			Pointer leftMost() {
+			pointer leftMost() {
 				while (_t_ptr->left != NULL) {
 					_t_ptr = _t_ptr->left;
 				}
@@ -72,7 +72,7 @@ namespace ft {
 
 			void decrement() {
 				if (_t_ptr->left == NULL) {
-					Pointer ptr = _t_ptr;
+					pointer ptr = _t_ptr;
 					while ((_t_ptr = _t_ptr->parent)->left == ptr) {
 						ptr = _t_ptr;
 					}
@@ -84,7 +84,7 @@ namespace ft {
 				}
 			};
 
-			Pointer rightMost() {
+			pointer rightMost() {
 				while (_t_ptr->right != NULL) {
 					_t_ptr = _t_ptr->right;
 				}

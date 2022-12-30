@@ -41,6 +41,7 @@ namespace ft {
 	class TreeBase : public CONTAINER {
 
 		public:
+			IMPORT_TYPE(value_type);
 			IMPORT_TYPE(allocator_type);
 			IMPORT_TYPE(reference);
 			IMPORT_TYPE(const_reference);
@@ -64,10 +65,10 @@ namespace ft {
 			size_type	_size;
 			NodePtr		root;
 			NodePtr		dummy;
-			typedef ft::bidirectional_iterator<pointer, NodePtr>		iterator;
-			typedef ft::bidirectional_iterator<const_pointer, NodePtr>	const_iterator;
-			typedef ft::reverse_iterator<iterator>						reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
+			typedef ft::bidirectional_iterator<NodePtr>				iterator;
+			typedef ft::bidirectional_iterator<ConstNodePtr>		const_iterator;
+			typedef ft::reverse_iterator<iterator>					reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 		public:
 
@@ -76,11 +77,25 @@ namespace ft {
 				return node->left = node->right = node->parent = node;
 			};
 
-			NodePtr newNode(NodePtr parent, const T &value) {};
+			NodePtr newNode(NodePtr parent, const T &value) {
+				NodePtr node = alloc.allocate(1);
+				alloc.construct(&node->value, value);
+				node->left = node->right = NULL;
+				node->parent = parent;
+				return node;
+			};
 
-			NodePtr newNode(ConstNodePtr parent) {};
+			NodePtr newNode(ConstNodePtr parent) {
+				NodePtr node = alloc.allocate(1);
+				alloc.construct(&(node->value), parent->value);
+				return node;
+			};
 
-			void deleteNode(NodePtr node) {};
+			void deleteNode(NodePtr node) {
+				if (ft::is_integral<value_type>::value == false)
+					alloc.destroy(node->value);
+				alloc.deallocate(node, 1);
+			};
 
 			template<class Visit> void preorder(NodePtr node, Visit visit) const {
 				if (node == NULL) { return; };
@@ -146,17 +161,44 @@ namespace ft {
 				return node->right;
 			};
 
-			// static void setParent(NodePtr child, NodePtr father) {};
+			static void setParent(NodePtr child, NodePtr parent) {
+				if (child != NULL)
+					child->parent = parent;
+			};
 
-			// void transferParent(NodePtr x, NodePtr y) {};
+			void transferParent(NodePtr x, NodePtr y) {
+				NodePtr xp = x->parent;
+				((x==root) ? root : (xp->right == x) ? xp->right : xp->left) = y;
+				setParent(y, xp);
+			};
 
 			// void transferNode(NodePtr x, NodePtr y) {};
 
-			// void clear(NodePtr node) {};
+			void clear(NodePtr node) {
+				if (node == NULL) { return; };
+				clear(node->left);
+				clear(node->right);
+				deleteNode(node);
+			};
 
-			// NodePtr copy(ConstNodePtr node) {};
+			NodePtr copy(ConstNodePtr node) {
+				if (node == NULL) { return NULL; };
+				NodePtr r = newNode(node);
+				r->left = copy(node->left);
+				setParent(r->left, r);
+				r->right = copy(node->right);
+				setParent(r->right, r);
+				return r;
+			};
 
-			// void copy(const TreeBase &x) {};
+			void copy(const TreeBase &x) {
+				if (x.empty()) { return; };
+				root = copy(x.root);
+				root->parent = dummy;
+				dummy->left = leftMost(root);
+				dummy->right = rightMost(root);
+				_size = x.size();
+			};
 
 			// static bool isBalanced(ConstNodePtr node, int &height) {};
 
@@ -171,11 +213,23 @@ namespace ft {
 			TreeBase(const allocator_type &a = allocator_type()) :
 				alloc(a), _size(0), root(NULL), dummy(newNode()) {};
 			
-			TreeBase(const TreeBase &x) {};
+			TreeBase(const TreeBase &x) :
+				alloc(x.get_allocator()), root(NULL), _size(0), dummy(newNode()) {
+					copy(x);
+				};
 
-			~TreeBase() {};
+			~TreeBase() {
+				clear(root);
+				alloc.deallocate(dummy, 1);
+			};
 
-			TreeBase &operator=(const TreeBase &x) {};
+			TreeBase &operator=(const TreeBase &x) {
+				if (this != &x) {
+					clear();
+					copy(x);
+				}
+				return *this;
+			};
 
 			allocator_type get_allocator() const { return alloc; };
 
@@ -227,11 +281,59 @@ namespace ft {
 				return insertNode<true>(value).first;
 			};
 
-			// size_type erase(const T &value) {};
+			template<class NP>
+			NP leftMost(NP node) {
+				while (node->left != NULL) {
+					node = node->left;
+				}
+				return node;
+			};
 
-			// void erase(iterator i) {};
+			template<class NP>
+			NP rightMost(NP node) {
+				while (node->right != NULL) {
+					node = node->right;
+				}
+				return node;
+			};
 
-			// void clear() {};
+			size_type erase(const T &value) {
+				size_type count = 0;
+				iterator p = find(value);
+				if (p != end()) {
+					do {
+						erase(p++);
+						++count;
+					} while (p != end() && value < *p);
+				}
+				return count;
+			};
+
+			void erase(iterator i) {
+				NodePtr node = i.base();
+				if (node == dummy->left)
+					dummy->left = (++iterator(i).base());
+				if (node == dummy->right)
+					dummy->right = (--iterator(i).base());
+				if (node->left == NULL)
+					transferParent(node, node->right);
+				else if (node->right == NULL)
+					transferParent(node, node->left);
+				else {
+					NodePtr previous = rightMost(node->left);
+					transferParent(previous, previous->left);
+					transferNode(node, previous);
+				}
+				--_size;
+				deleteNode(node);
+			};
+
+			void clear() {
+				clear(root);
+				dummy->left = dummy->right = dummy;
+				root = NULL;
+				_size = 0;
+			};
 
 			// void balance() {};
 
