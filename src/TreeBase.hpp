@@ -50,7 +50,7 @@ namespace ft {
 			IMPORT_TYPE(const_pointer);
 			IMPORT_TYPE(size_type);
 			IMPORT_TYPE(difference_type);
-		
+
 		protected:
 			struct													Node;
 			typedef typename Alloc::template rebind<Node>::other 	ANode;
@@ -73,6 +73,31 @@ namespace ft {
 			typedef ft::bidirectional_iterator<ConstNodePtr>		const_iterator;
 			typedef ft::reverse_iterator<iterator>					reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+
+/******************************************************************************/
+/*					Constructors & Destructor							      */
+/******************************************************************************/
+
+			TreeBase(const allocator_type &a = allocator_type()) :
+				alloc(a), constr(a), _size(0), root(NULL), dummy(newNode()) {};
+			
+			TreeBase(const TreeBase &x) :
+				constr(x.get_allocator()), alloc(x.get_allocator()), root(NULL), _size(0), dummy(newNode()) {
+					copy(x);
+				};
+
+			~TreeBase() {
+				clear(root);
+				alloc.deallocate(dummy, 1);
+			};
+
+			TreeBase &operator=(const TreeBase &x) {
+				if (this != &x) {
+					clear();
+					copy(x);
+				}
+				return *this;
+			};
 
 			NodePtr newNode() {
 				NodePtr node = alloc.allocate(1);
@@ -98,6 +123,10 @@ namespace ft {
 				alloc.deallocate(node, 1);
 			};
 
+/******************************************************************************/
+/*					Percursos pre, in, post								      */
+/******************************************************************************/
+
 			template<class Visit> void preorder(NodePtr node, Visit visit) const {
 				if (node == NULL) { return; };
 				visit(node->value);
@@ -117,6 +146,25 @@ namespace ft {
 				inorder(node->left, visit);
 				inorder(node->right, visit);
 				visit(node->value);
+			};
+
+			template<class Visit> void preorder(Visit visit) const { preorder(root, visit); };
+
+			template<class Visit> void inorder(Visit visit) const { inorder(root, visit); };
+
+			template<class Visit> void postorder(Visit visit) const { postorder(root, visit); };
+
+
+/******************************************************************************/
+/*						Modifiers										      */
+/******************************************************************************/
+
+			pair<iterator, bool> insertUni(const value_type &value) {
+				return insertNode<false>(value);
+			};
+
+			iterator insertMulti(const value_type &value) {
+				return insertNode<true>(value).first;
 			};
 
 			template<bool MULTI> pair<iterator, bool> insertNode(const value_type &value) {
@@ -173,7 +221,13 @@ namespace ft {
 				setParent(y, xp);
 			};
 
-			// void transferNode(NodePtr x, NodePtr y) {};
+			void transferNode(NodePtr x, NodePtr y) {
+				transferParent(x, y);
+				y->left = x->left;
+				setParent(y->left, y);
+				y->right = x->right;
+				setParent(y->right, y);
+			};
 
 			void clear(NodePtr node) {
 				if (node == NULL) { return; };
@@ -201,8 +255,6 @@ namespace ft {
 				_size = x.size();
 			};
 
-			// static bool isBalanced(ConstNodePtr node, int &height) {};
-
 			static void treeToList(NodePtr node, NodePtr &head) {
 				if (node == NULL) { return; };
 				treeToList(node->right, head);
@@ -222,97 +274,6 @@ namespace ft {
 				root->right = listToTree(head, size - 1 - half);
 				setParent(root->right, root);
 				return root;
-			};
-
-			iterator getIterator(NodePtr node) { return iterator(node); };
-
-			NodePtr getNode(iterator i) { return i.base(); };
-
-			TreeBase(const allocator_type &a = allocator_type()) :
-				alloc(a), constr(a), _size(0), root(NULL), dummy(newNode()) {};
-			
-			TreeBase(const TreeBase &x) :
-				constr(x.get_allocator()), alloc(x.get_allocator()), root(NULL), _size(0), dummy(newNode()) {
-					copy(x);
-				};
-
-			~TreeBase() {
-				clear(root);
-				alloc.deallocate(dummy, 1);
-			};
-
-			TreeBase &operator=(const TreeBase &x) {
-				if (this != &x) {
-					clear();
-					copy(x);
-				}
-				return *this;
-			};
-
-			allocator_type get_allocator() const { return constr; };
-
-			template<class Visit> void preorder(Visit visit) const { preorder(root, visit); };
-
-			template<class Visit> void inorder(Visit visit) const { inorder(root, visit); };
-
-			template<class Visit> void postorder(Visit visit) const { postorder(root, visit); };
-
-			iterator begin() { return iterator(dummy->left); };
-
-			iterator end() { return iterator(dummy); };
-
-			const_iterator begin() const { return const_iterator(dummy->left); };
-
-			const_iterator end() const { return const_iterator(dummy); };
-
-			size_type size() const { return _size; };
-
-			bool empty() const { return size() == 0; };
-
-			reference front() { return *begin(); };
-
-			reference back() { return *(--end()); };
-
-			const_reference front() const { return *begin(); };
-
-			const_reference back() const { return *(--end()); };
-
-			iterator find(const T &value) {
-				NodePtr node = root;
-				NodePtr aux = dummy;
-				while (node != NULL) {
-					if (node->value < value)
-						node = node->right;
-					else {
-						aux = node;
-						node = node->left;
-					} 
-				}
-				return (aux == dummy || value < aux->value) ? end() : iterator(aux);
-			};
-
-			pair<iterator, bool> insertUni(const value_type &value) {
-				return insertNode<false>(value);
-			};
-
-			iterator insertMulti(const value_type &value) {
-				return insertNode<true>(value).first;
-			};
-
-			template<class NP>
-			NP leftMost(NP node) {
-				while (node->left != NULL) {
-					node = node->left;
-				}
-				return node;
-			};
-
-			template<class NP>
-			NP rightMost(NP node) {
-				while (node->right != NULL) {
-					node = node->right;
-				}
-				return node;
 			};
 
 			size_type erase(const value_type &value) {
@@ -361,9 +322,85 @@ namespace ft {
 				root->parent = dummy;
 			};
 
-			void display() const {
-				inorder(displayValue<T>());
+/******************************************************************************/
+/*						Getters											      */
+/******************************************************************************/
+
+			iterator getIterator(NodePtr node) { return iterator(node); };
+
+			NodePtr getNode(iterator i) { return i.base(); };
+
+			allocator_type get_allocator() const { return constr; };
+
+			size_type size() const { return _size; };
+
+			bool empty() const { return size() == 0; };
+
+/******************************************************************************/
+/*						Iterators										      */
+/******************************************************************************/
+
+			iterator begin() { return iterator(dummy->left); };
+
+			iterator end() { return iterator(dummy); };
+
+			const_iterator begin() const { return const_iterator(dummy->left); };
+
+			const_iterator end() const { return const_iterator(dummy); };
+
+			reverse_iterator rbegin(void) {	return reverse_iterator(end()); };
+
+			const_reverse_iterator rbegin(void) const {	return const_reverse_iterator(end()); };
+
+			reverse_iterator rend(void) { return reverse_iterator(begin()); };
+
+			const_reverse_iterator rend(void) const { return const_reverse_iterator(begin()); };
+
+/******************************************************************************/
+/*						Acessors										      */
+/******************************************************************************/
+
+			reference front() { return *begin(); };
+
+			reference back() { return *(--end()); };
+
+			const_reference front() const { return *begin(); };
+
+			const_reference back() const { return *(--end()); };
+
+			iterator find(const T &value) {
+				NodePtr node = root;
+				NodePtr aux = dummy;
+				while (node != NULL) {
+					if (node->value < value)
+						node = node->right;
+					else {
+						aux = node;
+						node = node->left;
+					} 
+				}
+				return (aux == dummy || value < aux->value) ? end() : iterator(aux);
 			};
+
+			template<class NP>
+			NP leftMost(NP node) {
+				while (node->left != NULL) {
+					node = node->left;
+				}
+				return node;
+			};
+
+			template<class NP>
+			NP rightMost(NP node) {
+				while (node->right != NULL) {
+					node = node->right;
+				}
+				return node;
+			};
+
+/******************************************************************************/
+/*						Debugger										      */
+/******************************************************************************/
 
 			bool isOrded() const;
 
@@ -386,25 +423,7 @@ namespace ft {
 				return false;
 			};
 
-			void printOn(std::ostream &os) const {
-				printOn(os, root, 1);
-			};
-
-			void printOn(std::ostream &os, NodePtr node, int level) const {
-				if (node == NULL) { return ; }
-				printOn(os, node->left, level + 1);
-				for (int i = 0; i < level; ++i) {
-					os << "  ";
-				}
-				os << node->value << std::endl;
-				printOn(os, node->right, level + 1);
-			};
-
-			template<class Tr>
-			void displayValue(const Tr &value) {
-				std::cout << value << " ";
-			};
-
+			void printOn(std::ostream &o) const;
 
 	};//class TreeBase
 
@@ -423,10 +442,28 @@ template<class T, class A>
 bool TreeBase<T,A>::isOrded() const {
 	if (size() < 2) return true;
 	bool is_order = true;
-	TreeBase::inorder( TestOrd<T>(dummy->left->value, is_order) );
+	TreeBase::inorder(TestOrd<T>(dummy->left->value, is_order));
 	return is_order;
 }
 
+template <class T> class PrintOn { // Objecto funcao
+	int nivel;
+	std::ostream &o;
+public:
+	PrintOn(std::ostream &out) : nivel(0), o(out) {}
+	PrintOn(const PrintOn &p) : nivel(p.nivel+1), o(p.o) {}
+	void operator()(const T &data) {
+		for (int i= 0; i < nivel; ++ i) o << "   ";
+		o << data << std::endl;
+	}
+};
+
+template<class T, class A>
+void TreeBase<T,A>::printOn(std::ostream &o) const
+	{ inorder( PrintOn<T>(o) ); }
+
+
+#undef CONTAINER
 };//namespace ft
 
 

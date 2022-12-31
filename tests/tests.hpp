@@ -8,6 +8,10 @@
 #include "../src/type_traits.hpp"
 #include "../src/algorithm.hpp"
 #include "../src/utility.hpp"
+#include "../src/TreeBase.hpp"
+#include "../src/bidirectional_iterator.hpp"
+#include "../src/Tree.hpp"
+#include "../src/RBTree.hpp"
 #include <vector>
 #include <iostream>
 #include <iterator>     // std::iterator, std::input_iterator_tag
