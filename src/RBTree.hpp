@@ -73,8 +73,40 @@ template <class Key, class Value, class KeyOfValue,
 				deleteNode(node);
 			};
 
-		public:
+			/**
+			 * @brief Aux method that returns a reference to the node pointer
+			 * in descendant's way, which value is equal to the argument passed.
+			 * 
+			 * @param p the argument to be compared
+			 * @return NodePtr& 
+			 */
+			NodePtr &getRefNode(NodePtr p) {
+				if (p == CONTAINER::root) { return CONTAINER::root; };
+				NodePtr parent = p->parent;
+				return (parent->left == p ? parent->left : parent->right);
+			}
 
+			void rotateRight(NodePtr p) {};
+
+			void rotateLeft(NodePtr p) {};
+
+			void adjustInsert(NodePtr p) {};
+
+			NodePtr getPrevious(NodePtr p) const {};
+
+			void changeNodes(NodePtr a, NodePtr b) {};
+
+			void eraseInLeaf(NodePtr &r) {};
+
+			void rebalance(NodePtr parent, NodePtr r) {};
+
+			void rebalanceLeft(NodePtr r) {};
+
+			void rebalanceRight(NodePtr r) {};
+
+			static void printOn(std::ostream &os, ConstNodePtr node, int level) {};
+
+		public:
 /******************************************************************************/
 /*					Constructors & Destructor							      */
 /******************************************************************************/
@@ -103,9 +135,25 @@ template <class Key, class Value, class KeyOfValue,
 				CONTAINER::_size = 0;
 			};
 
-			void printOn(std::ostream &os) const { printOn(os, CONTAINER::root); };
+			void printOn(std::ostream &os) const { printOn(os, CONTAINER::root, 1); };
 
-			
+			NodePtr newNode(NodePtr p, const Value& val) {};
+
+			NodePtr newNode(ConstNodePtr p) {};
+
+			void deleteNode(NodePtr p) {};
+
+			template<bool, MULTI>
+			pair <iterator, bool> insertNode(const Value& val) {};
+
+			NodePtr insertLeft(NodePtr r, const Value& val) {};
+
+			NodePtr insertRight(NodePtr r, const Value& val) {};
+
+			bool erase(const Key& k) {};
+
+			void erase(iterator it) {};
+
 
 	};// class RBTree
 	#undef CONTAINER

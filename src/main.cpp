@@ -25,4 +25,5 @@ int main(void)
 	(void)t;
 	ft::Tree<std::string, Word> tab;
 	(void)tab;
+	ft::RBTree<std::string, Word, Word> tab2;
 }
