@@ -86,9 +86,41 @@ template <class Key, class Value, class KeyOfValue,
 				return (parent->left == p ? parent->left : parent->right);
 			}
 
-			void rotateRight(NodePtr p) {};
+			/**
+			 * @brief Methods that rotate the tree to left or right uses the actions
+			 * ilustrated in the image below:
+			 * https://drive.google.com/file/d/1ZVv0_qj78NOV_p7dT-cc_Jn9xinSQF7I/view?usp=sharing
+			 * 
+			 */
+			void rotateRight(NodePtr m) {
+				NodePtr &rp = getRefNode(m);
+				rp = m->left;
+				m->left = rp->right;
+				rp->right = m;
+				if (m->left != NULL)
+					m->left->parent = m;
+				rp->parent = m->parent;
+				m->parent = rp;
+			};
 
-			void rotateLeft(NodePtr p) {};
+			/**
+			 * @brief Methods that rotate the tree to left or right uses the actions
+			 * ilustrated in the image below:
+			 * https://drive.google.com/file/d/1ZVv0_qj78NOV_p7dT-cc_Jn9xinSQF7I/view?usp=sharing
+			 * 
+			 * Although the image is the same, the methods are just a simetric reflection
+			 * of the other.
+			 */
+			void rotateLeft(NodePtr n) {
+				NodePtr &rp getRefNode(n);
+				rp = n->right;
+				n->right = rp->left;
+				rp->left = n;
+				if (n->right != NULL)
+					n->right->parent = n;
+				rp->parent = n->parent;
+				n->parent = rp;
+			};
 
 			void adjustInsert(NodePtr p) {};
 
