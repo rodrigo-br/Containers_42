@@ -14,13 +14,9 @@
  */
 namespace ft {
 
-template<class K, class V = K> struct _Identity {
-		const K &operator() (const V &v) const { return v; }
-	};
-
 #define CONTAINER Tree<Key, Value, KeyOfValue, Compare, Alloc>
 template <class Key, class Value,
-		class KeyOfValue = _Identity<Key, Value>,
+		class KeyOfValue = ft::Identity<Key, Value>,
 		class Compare = less<Key>,
 		class Alloc = std::allocator<Value> >
 	class RBTree : public CONTAINER {
@@ -31,19 +27,18 @@ template <class Key, class Value,
 			IMPORT_TYPE(size_type);
 			IMPORT_TYPE(Node);
 			IMPORT_TYPE(NodePtr);
+			struct RBNode;
+			typedef typename Alloc::template rebind<RBNode>::other AllocRBNode;
+			typedef typename AllocRBNode::pointer RBNodePtr;
+			
+			AllocRBNode allocRB;
 			IMPORT_TYPE(ConstNodePtr);
-
-		protected:
 			enum Color { RED, BLACK };
 			struct RBNode : public Node {
 				Color color;
 			};
 
-			typedef typename Alloc::template rebind<RBNode>::other AllocRBNode;
-			typedef typename AllocRBNode::pointer RBNodePtr;
-			
-			AllocRBNode allocRB;
-
+		protected:
 		/*
 		*	To avoid using explicit conversions from pointers to RBNodes when
 		*	accessing the color of a node, the following set of static methods
@@ -276,6 +271,10 @@ template <class Key, class Value,
 				}
 			};
 
+			/**
+			 * @brief print the tree on the given stream from left to right
+			 * (NOT FROM TOP TO BOTTOM)
+			 */
 			static void printOn(std::ostream &os, ConstNodePtr node, int level) {
 				if (node == NULL)
 					return ;
@@ -318,6 +317,11 @@ template <class Key, class Value,
 				CONTAINER::_size = 0;
 			};
 
+			/**
+			 * @brief Auxiliar function to print the tree on the given stream
+			 * from left to right (NOT FROM TOP TO BOTTOM).
+			 * it calls the static function printOn recursively.
+			 */
 			void printOn(std::ostream &os) const { printOn(os, CONTAINER::root, 1); };
 
 			/**

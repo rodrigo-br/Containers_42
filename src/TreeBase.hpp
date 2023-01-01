@@ -50,8 +50,6 @@ namespace ft {
 			IMPORT_TYPE(const_pointer);
 			IMPORT_TYPE(size_type);
 			IMPORT_TYPE(difference_type);
-
-		protected:
 			struct													Node;
 			typedef typename Alloc::template rebind<Node>::other 	ANode;
 			typedef typename ANode::pointer							NodePtr;
@@ -62,6 +60,8 @@ namespace ft {
 				NodePtr		left;
 				NodePtr		right;
 			};
+
+		protected:
 			ANode			alloc;
 			allocator_type	constr;
 			size_type		_size;
