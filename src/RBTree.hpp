@@ -122,7 +122,47 @@ template <class Key, class Value, class KeyOfValue,
 				n->parent = rp;
 			};
 
-			void adjustInsert(NodePtr p) {};
+			/**
+			 * @brief The insert methods in the RBT follow the same logic as in
+			 * the Tree class, but they also have to colors the node and adjust
+			 * the tree to keep the RBT properties.
+			 * 
+			 * This method is an auxiliar method to the insert methods as
+			 * ilustrated in the image below:
+			 * https://drive.google.com/file/d/1PoTdN-kQ6s3DTJoyYqcLkt8smtk78Qov/view?usp=sharing
+			 */
+			void adjustInsert(NodePtr r) {
+				if (r == CONTAINER::root) {
+					setCol(r, BLACK); //Case 1)
+					return;
+				}
+				if (isBlack(r->parent)) { 
+					return; //Case 2 and 3)
+				}
+				NodePtr gramma = r->parent->parent;
+				NodePtr p_right = gramma->right;
+				NodePtr p_left = gramma->left;
+				if /*if 1*/(isNullOrBlack(p_left) || isNullOrBlack(p_right)) {
+					if /*if 2*/(isNullOrBlack(p_left)) {
+						if (p_right->left == r)
+							rotateRight(p_right); //Case 4)
+						rotateLeft(gramma); //Case 5)
+					} /*endif 2*/else {
+						if (p_left->right == r)
+							rotateLeft(p_left); //Case 6)
+						rotateRight(gramma); //Case 7)
+					}
+				setCol(gramma, RED);
+				setCol(gramma->parent, BLACK);
+				}/*endif 1*/ else { //Case 8, 9, 10 and 11)
+					setCol(p_left, BLACK);
+					setCol(p_right, BLACK);
+					if /*if 3*/ (gramma != CONTAINER::root) {
+						setCol(gramma, RED);
+						adjustInsert(gramma);
+					} /*endif 3*/
+				}/*endelse do if 1*/
+			};
 
 			NodePtr getPrevious(NodePtr p) const {};
 
@@ -174,6 +214,25 @@ template <class Key, class Value, class KeyOfValue,
 			NodePtr newNode(ConstNodePtr p) {};
 
 			void deleteNode(NodePtr p) {};
+
+			/**
+			 * @brief If the node doesn't exist, it adjust the insertion.
+			 */
+			pair <iterator, bool> insertUni(const Value& val) {
+				pair<iterator, bool> res = insertNode<false>(val);
+				if (res.second)
+					adjustInsert(getNode(res.first));
+				return res;
+			};
+
+			/**
+			 * @brief always need to adjust the insertion. 
+			 */
+			iterator insertMulti(const Value& val) {
+				iterator res = insertNode<true>(val).first;
+				adjustInsert(getNode(res));
+				return res;
+			};
 
 			template<bool, MULTI>
 			pair <iterator, bool> insertNode(const Value& val) {};
