@@ -14,8 +14,13 @@
  */
 namespace ft {
 
+template<class K, class V = K> struct _Identity {
+		const K &operator() (const V &v) const { return v; }
+	};
+
 #define CONTAINER Tree<Key, Value, KeyOfValue, Compare, Alloc>
-template <class Key, class Value, class KeyOfValue,
+template <class Key, class Value,
+		class KeyOfValue = _Identity<Key, Value>,
 		class Compare = less<Key>,
 		class Alloc = std::allocator<Value> >
 	class RBTree : public CONTAINER {
@@ -52,9 +57,9 @@ template <class Key, class Value, class KeyOfValue,
 
 			static void setCol(NodePtr node, Color c) { RBNodePtr(node)->color = c; };
 
-			static void isBlack(ConstNodePtr node) { return getCol(node) == BLACK; };
+			static bool isBlack(ConstNodePtr node) { return getCol(node) == BLACK; };
 
-			static void isRed(ConstNodePtr node) { return getCol(node) == RED; };
+			static bool isRed(ConstNodePtr node) { return getCol(node) == RED; };
 
 			static bool isNullOrBlack(ConstNodePtr node) { return (node == NULL || isBlack(node)); };
 
@@ -112,7 +117,7 @@ template <class Key, class Value, class KeyOfValue,
 			 * of the other.
 			 */
 			void rotateLeft(NodePtr n) {
-				NodePtr &rp getRefNode(n);
+				NodePtr &rp = getRefNode(n);
 				rp = n->right;
 				n->right = rp->left;
 				rp->left = n;
@@ -164,27 +169,133 @@ template <class Key, class Value, class KeyOfValue,
 				}/*endelse do if 1*/
 			};
 
-			NodePtr getPrevious(NodePtr p) const {};
+			NodePtr getPrevious(NodePtr p) const { return CONTAINER::rightMost(p->left); };
 
-			void changeNodes(NodePtr a, NodePtr b) {};
+			void changeNodes(NodePtr x, NodePtr y) {
+				NodePtr yp = y->parent;
+				NodePtr xl = x->left;
+				getRefNode(x) = y;
+				y->parent = x->parent;
+				x->left = y->left;
+				if (x->left != NULL)
+					x->left->parent = x;
+				y->right = x->right;
+				y->right->parent = y;
+				if (xl != y) {
+					yp->right = x;
+					x->parent = yp;
+				}
+				else
+					xl = x;
+				y->left = xl;
+				xl->parent = y;
+				x->right = NULL;
+				Color c = getCol(x);
+				setCol(x, getCol(y));
+				setCol(y, c);
+			};
 
-			void eraseInLeaf(NodePtr &r) {};
+			void eraseInLeaf(NodePtr &r) {
+				if (isRed(r) || CONTAINER::size() == 1) {
+					deleteNode(r);
+					r = NULL;
+					return ;
+				}
+				if (!isNullOrBlack(r->right) || !isNullOrBlack(r->left)) {
+					NodePtr rem = r;
+					if (isNullOrBlack(r->left))
+						r = r->right;
+					else
+						r = r->left;
+					r->parent = rem->parent;
+					deleteNode(rem);
+					setCol(r, BLACK);
+				} else {
+					NodePtr parent = r->parent;
+					deleteNode(r);
+					r = NULL;
+					rebalance(parent, NULL);
+				}
+			};
 
-			void rebalance(NodePtr parent, NodePtr r) {};
+			void rebalance(NodePtr parent, NodePtr r) {
+				if (r == NULL)
+					return ;
+				if (parent->left == r)
+					rebalanceLeft(parent);
+				else
+					rebalanceRight(parent);
+			};
 
-			void rebalanceLeft(NodePtr r) {};
+			void rebalanceLeft(NodePtr r) {
+				NodePtr pr = r->right;
+				if (isRed(pr)) {
+					rotateLeft(r);
+					setCol(pr, BLACK);
+					setCol(r, RED);
+					pr = r->right;
+				}
+				if (isNullOrBlack(pr->left) && isNullOrBlack(pr->right)) {
+					setCol(pr, RED);
+					if (isRed(r))
+						setCol(r, BLACK);
+					else
+						rebalance(r->parent, r);
+				} else {
+					if (isNullOrBlack(pr->right))
+						rotateRight(pr);
+					rotateLeft(r);
+					setCol(r->parent, getCol(r));
+					setCol(r->parent->right, BLACK);
+					setCol(r, BLACK);
+				}
+			};
 
-			void rebalanceRight(NodePtr r) {};
+			void rebalanceRight(NodePtr r) {
+				NodePtr pl = r->left;
+				if (isRed(pl)) {
+					rotateRight(r);
+					setCol(pl, BLACK);
+					setCol(r, RED);
+					pl = r->left;
+				}
+				if (isNullOrBlack(pl->left) && isNullOrBlack(pl->right)) {
+					setCol(pl, RED);
+					if (isRed(r))
+						setCol(r, BLACK);
+					else
+						rebalance(r->parent, r);
+				} else {
+					if (isNullOrBlack(pl->left)) {
+						rotateLeft(pl);
+					}
+					rotateRight(r);
+					setCol(r->parent, getCol(r));
+					setCol(r->parent->left, BLACK);
+					setCol(r, BLACK);
+				}
+			};
 
-			static void printOn(std::ostream &os, ConstNodePtr node, int level) {};
+			static void printOn(std::ostream &os, ConstNodePtr node, int level) {
+				if (node == NULL)
+					return ;
+				printOn(os, node->left, level + 1);
+				for (int i = 0; i < level; i++)
+					os << "\t";
+				if (RBNodePtr(node)->color == RED)
+					os << "\033[1m\033[31m " << node->value << "\033[0m" << std::endl;
+				else
+					os << "\033[1m\033[30m" << node->value << "\033[0m" << std::endl;
+				printOn(os, node->right, level + 1);
+			};
 
 		public:
 /******************************************************************************/
 /*					Constructors & Destructor							      */
 /******************************************************************************/
 
-			RBTree(const Compare& comp = Compare(), const Alloc&alloc = Alloc()) :
-				CONTAINER(comp, alloc), allocRB(alloc) {};
+			RBTree(const Compare& comp = Compare(), const Alloc&a = Alloc()) :
+				CONTAINER(comp, a), allocRB(a) {};
 			
 			RBTree(const RBTree& x) : CONTAINER(x.cmp, x.constr), allocRB(x.allocRB) {
 				copy(x);
@@ -209,11 +320,34 @@ template <class Key, class Value, class KeyOfValue,
 
 			void printOn(std::ostream &os) const { printOn(os, CONTAINER::root, 1); };
 
-			NodePtr newNode(NodePtr p, const Value& val) {};
+			/**
+			 * @brief The difference between the newNode from Tree and RBTree 
+			 * is that allocate and deallocate invoke the RBNode object trough
+			 * the allocRB allocator and it initialize the attributes color. 
+			 */
+			NodePtr newNode(NodePtr p, const Value& val) {
+				NodePtr n = allocRB.allocate(1);
+				CONTAINER::constr.construct(&(n->value), val);
+				n->left = n->right = NULL;
+				n->parent = p;
+				setCol(n, RED);
+				return n;
+			};
 
-			NodePtr newNode(ConstNodePtr p) {};
+			NodePtr newNode(ConstNodePtr p) {
+				NodePtr n = allocRB.allocate(1);
+				CONTAINER::constr.construct(&(n->value), p->value);
+				setCol(n, getCol(p));
+				return n;
+			};
 
-			void deleteNode(NodePtr p) {};
+			/**
+			 * @brief destroy through constr and deallocate through allocRB.
+			 */
+			void deleteNode(NodePtr p) {
+				CONTAINER::constr.destroy(&(p->value));
+				allocRB.deallocate(RBNodePtr(p), 1);
+			};
 
 			/**
 			 * @brief If the node doesn't exist, it adjust the insertion.
@@ -221,7 +355,7 @@ template <class Key, class Value, class KeyOfValue,
 			pair <iterator, bool> insertUni(const Value& val) {
 				pair<iterator, bool> res = insertNode<false>(val);
 				if (res.second)
-					adjustInsert(getNode(res.first));
+					adjustInsert(CONTAINER::getNode(res.first));
 				return res;
 			};
 
@@ -230,20 +364,80 @@ template <class Key, class Value, class KeyOfValue,
 			 */
 			iterator insertMulti(const Value& val) {
 				iterator res = insertNode<true>(val).first;
-				adjustInsert(getNode(res));
+				adjustInsert(CONTAINER::getNode(res));
 				return res;
 			};
 
-			template<bool, MULTI>
-			pair <iterator, bool> insertNode(const Value& val) {};
+			/**
+			 * @brief Exactly same implementation as Tree
+			 */
+			template<bool MULTI>
+			pair <iterator, bool> insertNode(const Value& v) {
+				NodePtr node;
+					if (CONTAINER::root == NULL)
+						node = CONTAINER::root = CONTAINER::dummy->left = CONTAINER::dummy->right = CONTAINER::newNode(CONTAINER::dummy, v);
+					else {
+						node = CONTAINER::root;
+						for (;;) {
+							if (CONTAINER::cmp(CONTAINER::key(v), CONTAINER::key(node->value))) {
+								if (node->left != NULL)
+									node = node->left;
+								else {
+									node = CONTAINER::insertLeft(node, v);
+									break ;
+								}
+							} else if (MULTI || CONTAINER::cmp(CONTAINER::key(node->value), CONTAINER::key(v))) {
+								if (node->right != NULL)
+									node = node->right;
+								else {
+									node = CONTAINER::insertRight(node, v);
+									break ;
+								}
+							} else
+								return pair<iterator, bool>(CONTAINER::getIterator(node), false);
+							}
+						}
+					CONTAINER::_size++;
+					return pair<iterator, bool>(CONTAINER::getIterator(node), true);
+			};
 
-			NodePtr insertLeft(NodePtr r, const Value& val) {};
+			NodePtr insertLeft(NodePtr node, const Value& value) {
+				node->left = newNode(node, value);
+				if (node == CONTAINER::dummy->left)
+					CONTAINER::dummy->left = node->left;
+				return node->left;
+			};
 
-			NodePtr insertRight(NodePtr r, const Value& val) {};
+			NodePtr insertRight(NodePtr node, const Value& value) {
+				node->right = newNode(node, value);
+				if (node == CONTAINER::dummy->right)
+					CONTAINER::dummy->right = node->right;
+				return node->right;
+			};
 
-			bool erase(const Key& k) {};
+			bool erase(const Key& k) {
+				iterator p = find(k);
+					size_type count = 0;
+					if (p != CONTAINER::end()) {
+						do {
+							erase(p++);
+							count++;
+						} while (p != CONTAINER::end() && !cmp(k, key(*p)));
+					}
+					return count;
+			};
 
-			void erase(iterator it) {};
+			void erase(iterator it) {
+				NodePtr p = CONTAINER::getNode(it);
+				if (p == CONTAINER::dummy->left)
+					CONTAINER::dummy->left = CONTAINER::getNode(++iterator(it));
+				if (p == CONTAINER::dummy->right)
+					CONTAINER::dummy->right = CONTAINER::getNode(--iterator(it));
+				if (p->left != NULL && p->right != NULL)
+					changeNodes(p, CONTAINER::rightMost(p->left));
+				eraseInLeaf(getRefNode(p));
+				--CONTAINER::_size;
+			};
 
 
 	};// class RBTree

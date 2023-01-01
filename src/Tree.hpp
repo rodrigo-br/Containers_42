@@ -55,11 +55,11 @@ template <class Key, class Value,
 			protected:
 				typedef KeyFromValue	kfromv_type;
 				key_compare				cmp;
-				kfromv_type				kFromV;
+				KeyFromValue			kFromV;
 
-				kfromv_type key_extract() const { return kFromV; };
+				KeyFromValue key_extract() const { return kFromV; };
 
-				const key_type &key(const value_type &v) const { return kFromV(v); };
+				const Key &key(const Value &v) const { return kFromV(v); };
 
 				template <bool MULTI>
 				pair<iterator, bool> insertNode(const value_type &v) {
