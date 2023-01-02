@@ -166,6 +166,10 @@ template <class Key, class Value,
 
 			NodePtr getPrevious(NodePtr p) const { return CONTAINER::rightMost(p->left); };
 
+			/**
+			 * @brief	change the node for one of its children, and then
+			 * 			adjust the tree to keep the RBT properties.
+			 */
 			void changeNodes(NodePtr x, NodePtr y) {
 				NodePtr yp = y->parent;
 				NodePtr xl = x->left;
@@ -351,6 +355,12 @@ template <class Key, class Value,
 			void deleteNode(NodePtr p) {
 				CONTAINER::constr.destroy(&(p->value));
 				allocRB.deallocate(RBNodePtr(p), 1);
+			};
+
+			template<typename InputIterator>
+			void insert_range(InputIterator first, InputIterator last) {
+				for (; first != last; first++)
+					insertUni(*first);
 			};
 
 			/**

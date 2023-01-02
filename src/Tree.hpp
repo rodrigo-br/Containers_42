@@ -134,7 +134,6 @@ template <class Key, class Value,
 					return count;
 				};
 
-
 		};//class Tree
 		#undef CONTAINER
 
