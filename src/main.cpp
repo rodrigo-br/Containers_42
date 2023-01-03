@@ -30,7 +30,7 @@ int main(void)
 	(void)tab;
 	ft::RBTree<std::string, Word> rbt;
 	(void)rbt;
-	ft::map<std::string, Word> map;
+	ft::map<std::string, unsigned> map;
 	(void)map;
 	rbt.insertUni(Word("a", 1));
 	rbt.insertUni(Word("b", 2));

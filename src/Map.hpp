@@ -28,7 +28,6 @@ template <class K, class T, class Cmp = less<K>,
 		IMPORT_TYPE(RBNodePtr);
 		IMPORT_TYPE(AllocRBNode);
 
-
 		class value_compare : public std::binary_function<value_type, value_type, bool> {
 			private:
 				value_compare() {};
@@ -39,8 +38,7 @@ template <class K, class T, class Cmp = less<K>,
 				bool operator()(const value_type &x, const value_type &y) const {
 					return cmp(x.first, y.first);
 				};
-		};//class value_compare
-
+		}; //class value_compare
 
 /******************************************************************************/
 /*					Constructors & Destructor							      */
@@ -60,11 +58,26 @@ template <class K, class T, class Cmp = less<K>,
 				tree_type.insert_range(first, last);
 			};
 
-	};
+		~map() {};
 
-#undef CONTAINER
+/******************************************************************************/
+/*								Modifiers								      */
+/******************************************************************************/
 
-}; // namespace
+		std::pair<iterator, bool> insert( const value_type& value ) {
+			return tree_type.insertUni(value);
+		};
+
+		iterator insert(iterator pos, const value_type& value) {};
+
+		template<class InputIt> void insert(InputIt first, InputIt last) {};
+
+
+		
+	}; //class map
+	#undef CONTAINER
+
+}; //namespace
 
 
 #endif
