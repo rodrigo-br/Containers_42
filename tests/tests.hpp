@@ -111,9 +111,4 @@ void simple_compare(ft::vector<T> &v1, ft::vector<T> &v2) {
 	REQUIRE(v2.size() == v1.size());
 }
 
-template<typename T, typename T_2>
-void compare(ft::map<T, T_2> &v1, std::map<T, T_2> &v2) {
-	
-}
-
 #endif
