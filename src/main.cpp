@@ -3,7 +3,6 @@
 #include "reverse_iterator.hpp"
 #include "algorithm.hpp"
 #include "type_traits.hpp"
-#include "Map.hpp"
 
 struct Word {
 	std::string word;

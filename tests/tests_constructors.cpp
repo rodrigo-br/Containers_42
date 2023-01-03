@@ -37,11 +37,3 @@ TEST_CASE ("Copy constructor") {
 
 	compare(v1, v2);
 }
-
-TEST_CASE ("MAP constructor vazio") {
-	ft::map<int, int> m;
-	std::map<int, int> m2;
-
-	compare(m, m2);
-
-}
