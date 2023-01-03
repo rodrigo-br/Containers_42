@@ -5,28 +5,28 @@
 
 namespace ft {
 
-	template<class pair> struct Node {
+	template<class Pair> struct Node {
 		Node				*parent;
 		Node				*left;
 		Node				*right;
-		pair				data;
+		Pair				value;
 		size_t				height;
 		typedef Node*		pointer;
 		typedef Node&		reference;
 		typedef const Node&	const_reference;
 
-		Node() : parent(NULL), left(NULL), right(NULL), height(0) {};
+		explicit Node() : parent(NULL), left(NULL), right(NULL), height(0) {};
 
-		Node(const pair &p) : parent(NULL), left(NULL), right(NULL), data(p), height(0) {};
+		explicit Node(const Pair &data) : parent(NULL), left(NULL), right(NULL), value(data), height(0) {};
 
 		Node(const_reference n) { *this = n; };
 
-		Node &operator=(const_reference n) {
+		Node &operator=(const Node& n) {
 			if (this != &n) {
 				parent = n.parent;
 				left = n.left;
 				right = n.right;
-				data = n.data;
+				value = n.value;
 				height = n.height;
 			}
 			return *this;
