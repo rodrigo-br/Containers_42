@@ -1,219 +1,148 @@
-#ifndef BIDIRECTIONAL_iterator_H
-#define BIDIRECTIONAL_iterator_H
+#ifndef BIDIRECTIONAL_ITERATOR_H
+#define BIDIRECTIONAL_ITERATOR_H
 
-#include "Node.hpp"
 #include "iterator_traits.hpp"
+#include "utility.hpp"
 
 namespace ft {
-#define TRAITS ft::bidirectional_iterator<ft::bidirectional_iterator_tag, T>
-	template<typename T, class Compare>
-	class bidirectional_iterator : public TRAITS {
+#define TRAITS ft::iterator_traits<T>
+	template <typename T> class bidirectional_iterator :
+		public ft::iterator<ft::bidirectional_iterator_tag, T>, public TRAITS
+	{
+
 		public:
-			IMPORT_TRAIT(value_type);
 			IMPORT_TRAIT(iterator_category);
+			IMPORT_TRAIT(value_type);
 			IMPORT_TRAIT(pointer);
 			IMPORT_TRAIT(reference);
 			IMPORT_TRAIT(difference_type);
+			typedef	T		iterator_type;
 
-			T 		*_node;
-			T 		*_tail;
-			Compare _comp;
-
+		private:
+			iterator_type	_ptr;
+			pointer			_t_ptr;
 
 		public:
-			bidirectional_iterator(const Compare &comp = Compare()) :
-				_node(NULL), _tail(NULL), _comp(comp) {};
 
-			bidirectional_iterator(T *node, T *tail, const Compare &comp = Compare()) :
-				_node(node), _tail(tail), _comp(comp) {};
+/******************************************************************************/
+/*					Constructors/Destructors							      */
+/******************************************************************************/
 
-			bidirectional_iterator(const bidirectional_iterator &other) { *this = other; };
+			bidirectional_iterator(): _ptr(NULL) {};
 
-			bidirectional_iterator &operator=(const bidirectional_iterator &other) {
-				if (this != &other)
-					_node = other._node;
-					_tail = other._tail;
-					_comp = other._comp;
+			explicit bidirectional_iterator(pointer ptr): _ptr(ptr) {};
+
+			bidirectional_iterator(const bidirectional_iterator& instance) { *this = instance; };
+
+			~bidirectional_iterator() {};
+
+			bidirectional_iterator& operator=(const bidirectional_iterator& rhs) {
+				_ptr = rhs.base();
 				return *this;
 			};
 
-			virtual ~bidirectional_iterator() {};
+/******************************************************************************/
+/*								Base									      */
+/******************************************************************************/
 
-			
+			iterator_type base(void) const { return (_ptr); };
 
-			bool operator==(const bidirectional_iterator &other) const { return _node == other._node; };
+/******************************************************************************/
+/*							Operators									      */
+/******************************************************************************/
 
-			bool operator!=(const bidirectional_iterator &other) const { return _node != other._node; };
+			void increment() {
+				if (_t_ptr->right == NULL) {
+					pointer ptr = _t_ptr;
+					while ((_t_ptr = _t_ptr->parent)->right == ptr) {
+						ptr = _t_ptr;
+					}
+				} else {
+					_t_ptr = leftMost(_t_ptr->right);
+				}
+			};
 
-			reference operator*() { return _node->data; };
+			pointer leftMost() {
+				while (_t_ptr->left != NULL) {
+					_t_ptr = _t_ptr->left;
+				}
+				return _t_ptr;
+			};
 
-			pointer operator->() { return &_node->data; };
+			void decrement() {
+				if (_t_ptr->left == NULL) {
+					pointer ptr = _t_ptr;
+					while ((_t_ptr = _t_ptr->parent)->left == ptr) {
+						ptr = _t_ptr;
+					}
+				} else {
+					if (_t_ptr->parent == _t_ptr)
+						_t_ptr = _t_ptr->right;
+					else
+						_t_ptr = rightMost(_t_ptr->left);
+				}
+			};
+
+			pointer rightMost() {
+				while (_t_ptr->right != NULL) {
+					_t_ptr = _t_ptr->right;
+				}
+				return _t_ptr;
+			};
 
 			bidirectional_iterator &operator++() {
-				T *tmp = _node;
-
-				if (_node->next() == _tail) {
-					tmp = _node->parent;
-					while (tmp != _tail && _comp(tmp->value.first, _node->value.first))
-						tmp = tmp->parent;
-					_node = tmp;
-				} else if (tmp == _tail)
-					_node = _tail->right;
-				else {
-					tmp = _node->right;
-					if (tmp == _tail->parent && tmp->right == _tail)
-						_node = tmp;
-					else {
-						while (tmp->left != _tail)
-							tmp = tmp->left;
-					}
-					_node = tmp;
-				}
+				increment();
 				return *this;
 			};
 
 			bidirectional_iterator operator++(int) {
-				bidirectional_iterator tmp = *this;
-				operator++();
-				return tmp;
+				bidirectional_iterator copy = *this;
+				increment();
+				return copy;
 			};
 
 			bidirectional_iterator &operator--() {
-				T *tmp = _node;
-
-				if (_node->left == _tail) {
-					tmp = _node->parent;
-					while (tmp != _tail && _comp(_node->value.first, tmp->value.first))
-						tmp = tmp->parent;
-					_node = tmp;
-				} else if (tmp == _tail)
-					_node = _tail->right;
-				else {
-					tmp = _node->left;
-					if (tmp == _tail->parent && tmp->left == _tail)
-						_node = tmp;
-					else {
-						while (tmp->right != _tail)
-							tmp = tmp->right;
-					}
-					_node = tmp;
-				}
+				decrement();
 				return *this;
 			};
 
 			bidirectional_iterator operator--(int) {
-				bidirectional_iterator tmp = *this;
-				operator--();
-				return tmp;
+				bidirectional_iterator copy = *this;
+				decrement();
+				return copy;
 			};
+
+			reference operator*() const { return (*_ptr); };
+
+			pointer operator->() const { return (_ptr); };
+
+			bool operator==(bidirectional_iterator& rhs) {
+				return _ptr == rhs._ptr;
+			};
+
+			bool operator!=(bidirectional_iterator& rhs) {
+				return _ptr != rhs._ptr;
+			};
+
+			bool operator>(bidirectional_iterator& rhs) {
+				return _ptr > rhs._ptr;
+			};
+
+			bool operator<(bidirectional_iterator& rhs) {
+				return _ptr < rhs._ptr;
+			};
+
+			bool operator>=(bidirectional_iterator& rhs) {
+				return _ptr >= rhs._ptr;
+			};
+
+			bool operator<=(bidirectional_iterator& rhs) {
+				return _ptr <= rhs._ptr;
+			};
+
 
 	};//class bidirectional_iterator
-	#undef TRAITS
-
-	#define TRAITS ft::const_bidirectional_iterator<ft::bidirectional_iterator_tag, T>
-	template<typename T, class Compare>
-	class const_bidirectional_iterator : public TRAITS {
-		public:
-			IMPORT_TRAIT(value_type);
-			IMPORT_TRAIT(iterator_category);
-			IMPORT_TRAIT(pointer);
-			IMPORT_TRAIT(reference);
-			IMPORT_TRAIT(difference_type);
-
-			T 		*_node;
-			T 		*_tail;
-			Compare _comp;
-
-
-		public:
-			const_bidirectional_iterator(const Compare &comp = Compare()) :
-				_node(NULL), _tail(NULL), _comp(comp) {};
-
-			const_bidirectional_iterator(T *node, T *tail, const Compare &comp = Compare()) :
-				_node(node), _tail(tail), _comp(comp) {};
-
-			const_bidirectional_iterator(const const_bidirectional_iterator &other) { *this = other; };
-
-			const_bidirectional_iterator &operator=(const const_bidirectional_iterator &other) {
-				if (this != &other)
-					_node = other._node;
-					_tail = other._tail;
-					_comp = other._comp;
-				return *this;
-			};
-
-			virtual ~const_bidirectional_iterator() {};
-
-			
-
-			bool operator==(const const_bidirectional_iterator &other) const { return _node == other._node; };
-
-			bool operator!=(const const_bidirectional_iterator &other) const { return _node != other._node; };
-
-			reference operator*() { return _node->data; };
-
-			pointer operator->() { return &_node->data; };
-
-			const_bidirectional_iterator &operator++() {
-				T *tmp = _node;
-
-				if (_node->next() == _tail) {
-					tmp = _node->parent;
-					while (tmp != _tail && _comp(tmp->value.first, _node->value.first))
-						tmp = tmp->parent;
-					_node = tmp;
-				} else if (tmp == _tail)
-					_node = _tail->right;
-				else {
-					tmp = _node->right;
-					if (tmp == _tail->parent && tmp->right == _tail)
-						_node = tmp;
-					else {
-						while (tmp->left != _tail)
-							tmp = tmp->left;
-					}
-					_node = tmp;
-				}
-				return *this;
-			};
-
-			const_bidirectional_iterator operator++(int) {
-				const_bidirectional_iterator tmp = *this;
-				operator++();
-				return tmp;
-			};
-
-			const_bidirectional_iterator &operator--() {
-				T *tmp = _node;
-
-				if (_node->left == _tail) {
-					tmp = _node->parent;
-					while (tmp != _tail && _comp(_node->value.first, tmp->value.first))
-						tmp = tmp->parent;
-					_node = tmp;
-				} else if (tmp == _tail)
-					_node = _tail->right;
-				else {
-					tmp = _node->left;
-					if (tmp == _tail->parent && tmp->left == _tail)
-						_node = tmp;
-					else {
-						while (tmp->right != _tail)
-							tmp = tmp->right;
-					}
-					_node = tmp;
-				}
-				return *this;
-			};
-
-			const_bidirectional_iterator operator--(int) {
-				const_bidirectional_iterator tmp = *this;
-				operator--();
-				return tmp;
-			};
-
-	};//class const_bidirectional_iterator
-	#undef TRAITS
+#undef TRAITS
 };//namespace ft
 
 #endif
