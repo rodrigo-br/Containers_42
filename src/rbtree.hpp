@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "bidirectional_iterator.hpp"
+#include "reverse_iterator.hpp"
 #include "iterator_traits.hpp"
 #include "functional.hpp"
 #include "functionalExt.hpp"
@@ -70,8 +71,36 @@ struct RBNode {
 
 template <typename Key, typename Value, typename KeyOfValue, typename Compare = less<Key>, typename Alloc = std::allocator<Value> >
 class RBTree {
-	// agora vai, menó...
+	
+	private:
+		typedef typename Alloc::template rebind<RBNode<Value> >::other	NodeAllocator;
+
+	public:
+		typedef			RBNode<Value>									Node;
+		typedef			Node*											NodePtr;
+		typedef const	Node*											ConstNodePtr;
+		typedef			Key												key_type;
+		typedef			Value											value_type;
+		typedef			value_type*										pointer;
+		typedef const	value_type*										const_pointer;
+		typedef			value_type&										reference;
+		typedef const	value_type&										const_reference;
+		typedef			size_t											size_type;
+		typedef			ptrdiff_t										difference_type;
+		typedef			Alloc											allocator_type;
+		typedef			ft::bidirectional_iterator<NodePtr>				iterator;
+		typedef			ft::bidirectional_iterator<ConstNodePtr>		const_iterator;
+		typedef			ft::reverse_iterator<iterator>					reverse_iterator;
+		typedef			ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+
+	NodePtr			_root;
+	NodePtr			_dummy;
+	size_type		_size;
+	Compare			_comp;
+	NodeAllocator	_nodeAlloc;
+	allocator_type	_alloc;
 
 }; // RBTree
 
+}; // namespace ft
 #endif
