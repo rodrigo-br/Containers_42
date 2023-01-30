@@ -7,6 +7,7 @@
 #include "iterator_traits.hpp"
 #include "functional.hpp"
 #include "functionalExt.hpp"
+#include <cstddef>
 #include "utility.hpp"
 #include "type_traits.hpp"
 #include "Container.hpp"
@@ -69,7 +70,7 @@ struct RBNode {
 
 }; // RBNode
 
-template <typename Key, typename Value, typename KeyOfValue = ft::Identity<Key, Value>, typename Compare = less<Key>, typename Alloc = std::allocator<Value> >
+template <typename Key, typename Value, typename KeyOfValue = Identity<Key, Value>, typename Compare = less<Key>, typename Alloc = std::allocator<Value> >
 class RBTree {
 
 	private:
@@ -94,11 +95,11 @@ class RBTree {
 		typedef			ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 	NodePtr			_root;
-	NodePtr			_dummy;
-	size_type		_size;
 	Compare			_comp;
-	NodeAllocator	_nodeAlloc;
 	allocator_type	_alloc;
+	size_type		_size;
+	NodePtr			_dummy;
+	NodeAllocator	_nodeAlloc;
 	KeyOfValue		_keyOfValue;
 
 	static Color getColor(ConstNodePtr x)
@@ -211,7 +212,6 @@ class RBTree {
 	{
 		if (x == _root)
 			return _root;
-
 		NodePtr parent = x->parent;
 
 		return (parent->left == x ? parent->left : parent->right);
@@ -362,13 +362,18 @@ class RBTree {
 
 	NodePtr insertLeft(NodePtr r, const Value &e)
 	{
-		// ...
-		return _nullptr;
+		r->left = newNode(r, e);
+		if (r == _dummy->left)
+			_dummy->left = r->left;
+		return r->left;
 	};
 
 	NodePtr insertRight(NodePtr r, const Value &e)
 	{
-		return _nullptr;
+		r->right = newNode(r, e);
+		if (r == _dummy->right)
+			_dummy->right = r->right;
+		return r->right;
 	};
 
 	const Key &key(const Value &e)

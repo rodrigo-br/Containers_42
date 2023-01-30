@@ -27,5 +27,6 @@ int main(void)
 	ft::vector<int> vec;
 	(void)vec;
 	ft::RBTree<int, ft::pair<int, std::string> > tree;
-	tree.insertUni(ft::make_pair(1, "one"));
+	(void)tree;
+	tree.insertUni(ft::make_pair<int, std::string>(1, "test"));
 }
