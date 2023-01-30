@@ -69,7 +69,7 @@ struct RBNode {
 
 }; // RBNode
 
-template <typename Key, typename Value, typename KeyOfValue, typename Compare = less<Key>, typename Alloc = std::allocator<Value> >
+template <typename Key, typename Value, typename KeyOfValue = ft::Identity<Key, Value>, typename Compare = less<Key>, typename Alloc = std::allocator<Value> >
 class RBTree {
 
 	private:
@@ -112,17 +112,35 @@ class RBTree {
 
 	static bool isRed(ConstNodePtr x)
 	{
-		return (getColor(x) == RED);
+		return (this->getColor(x) == RED);
 	};
 
 	static bool isBlack(ConstNodePtr x)
 	{
-		return (getColor(x) == BLACK);
+		return (this->getColor(x) == BLACK);
 	};
 
 	static bool isNullOrBlack(ConstNodePtr x)
 	{
-		return (x == _nullptr || isBlack(x));
+		return (x == _nullptr || this->isBlack(x));
+	};
+
+	RBTree(const Compare &c = Compare(), const Alloc &a = Alloc()) :
+		_root(_nullptr), _comp(c), _alloc(a), _size(0) {
+		_dummy = _nodeAlloc.allocate(1);
+		_dummy->parent = _nullptr;
+		_dummy->left = _nullptr;
+		_dummy->right = _nullptr;
+		_dummy->color = BLACK;
+	};
+
+	RBTree(const RBTree &x) :
+		_root(x._root), _comp(x._comp), _alloc(x._alloc) {
+		this->copy(x);
+	};
+
+	~RBTree() {
+		this->clear();
 	};
 
 }; // RBTree

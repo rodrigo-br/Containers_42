@@ -3,6 +3,9 @@
 #include "reverse_iterator.hpp"
 #include "algorithm.hpp"
 #include "type_traits.hpp"
+#include "rbtree.hpp"
+#include <string>
+#include <ostream>
 
 struct Word {
 	std::string word;
@@ -23,4 +26,6 @@ int main(void)
 {
 	ft::vector<int> vec;
 	(void)vec;
+	ft::RBTree<int, std::string> tree;
+	(void)tree;
 }
