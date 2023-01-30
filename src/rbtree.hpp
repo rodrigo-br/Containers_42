@@ -175,6 +175,48 @@ class RBTree {
 		n->parent = rp;
 	};
 
+	void adjustInsert(NodePtr r)
+	{
+		if (r == _root)
+		{
+			this->setColor(r, BLACK);
+			return ;
+		}
+		if (this->isBlack(r->parent))
+			return ;
+		NodePtr y = r->parent->parent;
+		NodePtr pr = y->right;
+		NodePtr pl = y->left;
+		if (this->isNullOrBlack(pl) && this->isNullOrBlack(pr))
+		{
+			if (this->isNullOrBlack(pl))
+			{
+				if (pr->left == r)
+					this->rotateRight(pr);
+				this->rotateLeft(y);
+			}
+			else if (this->isNullOrBlack(pr))
+			{
+				if (pl->right == r)
+					this->rotateLeft(pl);
+				this->rotateRight(y);
+			}
+			this->setColor(y, RED);
+			this->setColor(y->parent, BLACK);
+		}
+		else
+		{
+			this->setColor(pl, BLACK);
+			this->setColor(pr, BLACK);
+			if (y != _root)
+			{
+				this->setColor(y, RED);
+				this->adjustInsert(y);
+			}
+		}
+		
+	};
+
 }; // RBTree
 
 }; // namespace ft
