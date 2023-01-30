@@ -143,6 +143,38 @@ class RBTree {
 		this->clear();
 	};
 
+	NodePtr &getRefNode(NodePtr x)
+	{
+		if (x == _root)
+			return _root;
+		NodePtr parent = x->parent;
+		return (parent->left == x ? parent->left : parent->right);
+	};
+
+	void rotateRight(NodePtr m)
+	{
+		NodePtr &rp = this->getRefNode(m);
+		rp = m->left;
+		m->left = rp->right;
+		rp->right = m;
+		if (m->left != _nullptr)
+			m->left->parent = m;
+		rp->parent = m->parent;
+		m->parent = rp;
+	};
+
+	void rotateLeft(NodePtr n)
+	{
+		NodePtr &rp = this->getRefNode(n);
+		rp = n->right;
+		n->right = rp->left;
+		rp->left = n;
+		if (n->right != _nullptr)
+			n->right->parent = n;
+		rp->parent = n->parent;
+		n->parent = rp;
+	};
+
 }; // RBTree
 
 }; // namespace ft
