@@ -11,7 +11,6 @@
 #include "type_traits.hpp"
 #include "Container.hpp"
 
-
 namespace ft{
 
 static class nullptr_t
@@ -67,11 +66,12 @@ struct RBNode {
 			x = x->right;
 		return x;
 	};
+
 }; // RBNode
 
 template <typename Key, typename Value, typename KeyOfValue, typename Compare = less<Key>, typename Alloc = std::allocator<Value> >
 class RBTree {
-	
+
 	private:
 		typedef typename Alloc::template rebind<RBNode<Value> >::other	NodeAllocator;
 
@@ -99,6 +99,31 @@ class RBTree {
 	Compare			_comp;
 	NodeAllocator	_nodeAlloc;
 	allocator_type	_alloc;
+
+	static Color getColor(ConstNodePtr x)
+	{
+		return (x == _nullptr ? BLACK : x->color);
+	};
+
+	static void setColor(NodePtr x, Color c)
+	{
+		x->color = c;
+	};
+
+	static bool isRed(ConstNodePtr x)
+	{
+		return (getColor(x) == RED);
+	};
+
+	static bool isBlack(ConstNodePtr x)
+	{
+		return (getColor(x) == BLACK);
+	};
+
+	static bool isNullOrBlack(ConstNodePtr x)
+	{
+		return (x == _nullptr || isBlack(x));
+	};
 
 }; // RBTree
 
