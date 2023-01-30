@@ -18,7 +18,6 @@ namespace ft {
 			IMPORT_TRAIT(difference_type);
 			typedef	T		iterator_type;
 
-		private:
 			iterator_type	_ptr;
 			pointer			_t_ptr;
 
