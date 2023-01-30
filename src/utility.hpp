@@ -2,27 +2,17 @@
 #define UTILITY_H
 
 namespace ft {
-	template <class T1, class T2>
-    struct pair
-    {
-    public:
-        typedef T1 first_type;
-        typedef T2 second_type;
+	template<class U, class V>
+	struct pair {
+		U first;
+		V second;
+		pair() : first(U()), second(V()) {};
+		pair(const U &u, const V &v) : first(u), second(v) {};
+	};
 
-        first_type first;
-        second_type second;
-
-        pair() : first(T1()), second(T2()) {};
-
-        template <class U, class V>
-        pair(const pair<U, V> &pr) : first(pr.first), second(pr.second) {};
-
-		pair(const first_type &a, const second_type &b) : first(a), second(b) {};
-    };
-
-	template <class T1, class T2>
-	pair<T1, T2> make_pair( T1 t, T2 u ) {
-		return (ft::pair<T1, T2>(t, u));
+	template<class U, class V>
+	pair<U, V> make_pair(const U &u, const V &v) {
+		return pair<U, V>(u, v);
 	};
 
 }; //namespace ft

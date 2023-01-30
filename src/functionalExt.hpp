@@ -7,7 +7,7 @@ namespace ft {
 
 template<class K, class V = K> 
 struct Identity {
-	const K &operator()(const V &v) const { return v; }
+	const K &operator()(const V &v) const { return v.first; }
 };
 
 template <class K, class T> 

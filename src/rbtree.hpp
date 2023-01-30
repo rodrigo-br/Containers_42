@@ -109,7 +109,8 @@ class RBTree {
 
 	static void setColor(NodePtr x, Color c)
 	{
-		x->color = c;
+		if (x != _nullptr)
+			x->color = c;
 	};
 
 	static bool isRed(ConstNodePtr x)
@@ -582,27 +583,60 @@ class RBTree {
 	{
 		if (r == _nullptr)
 		{
-			return ;
+			return;
 		}
 		printOn(o, r->left, i + 1);
-		for (int j = 0; j < i; ++j)
+		for (int j = 0; j < i; j++)
 		{
-			o << "  ";
+			o << " ";
 		}
-		if (getColor(r) == RED)
+		if (isRed(r))
 		{
-			o << "\033[1;31m" << std::endl;
+			o << "\033[1m\033[31m";
 		}
-		else
-		{
-			o << "\033[0m" << std::endl;
-		}
+		else o << "\033[1m\033[30m";
+		o << " " << r->value.first << "\033[0m" << std::endl;
 		printOn(o, r->right, i + 1);
 	};
 
 	size_t size(void) const
 	{
 		return _size;
+	}
+
+	void printOn(std::ostream &o)
+	{
+		printOn(o, _root, 1);
+	}
+
+	void prettyPrint()
+	{
+		if (_root)
+		{
+			printHelper(_root, "", true);
+		}
+	};
+
+	void printHelper(NodePtr root, std::string indent, bool test)
+	{
+		if (root != _nullptr)
+		{
+			std::cout << indent;
+			if (test)
+			{
+				std::cout << "----";
+				indent += "     ";
+			}
+			else
+			{
+				std::cout << "----";
+				indent += "|    ";
+			}
+		}
+		std::string sColor = isRed(root) ? "RED" : "BLACK";
+		std::cout << root->value.first << "(" << sColor << ")" << std::endl;
+		printHelper(root->left, indent, false);
+		printHelper(root->right, indent, true);
 	}
 
 }; // RBTree
