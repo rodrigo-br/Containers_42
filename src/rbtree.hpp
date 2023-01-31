@@ -14,16 +14,6 @@
 
 namespace ft{
 
-static class nullptr_t
-{
-	public:
-		template<class T> operator T*() const { return (0); }
-		template<class C, class T> operator T C::*() const { return (0); }
-	private:
-		void operator&() const;
-
-} _nullptr = {};
-
 enum Color { RED, BLACK };
 
 template <typename Value>
@@ -38,32 +28,32 @@ struct RBNode {
 	NodePtr					right;
 	Value					value;
 
-	RBNode() : value(Value()), color(RED), parent(_nullptr), left(_nullptr), right(_nullptr) {};
+	RBNode() : value(Value()), color(RED), parent(NULL), left(NULL), right(NULL) {};
 
 	NodePtr minimum(NodePtr x)
 	{
-		while (x->left != _nullptr)
+		while (x->left != NULL)
 			x = x->left;
 		return x;
 	};
 
 	NodePtr maximum(NodePtr x)
 	{
-		while (x->right != _nullptr)
+		while (x->right != NULL)
 			x = x->right;
 		return x;
 	};
 
 	ConstNodePtr minimum(ConstNodePtr x)
 	{
-		while (x->left != _nullptr)
+		while (x->left != NULL)
 			x = x->left;
 		return x;
 	};
 
 	ConstNodePtr maximum(ConstNodePtr x)
 	{
-		while (x->right != _nullptr)
+		while (x->right != NULL)
 			x = x->right;
 		return x;
 	};
@@ -104,12 +94,12 @@ class RBTree {
 
 	static Color getColor(ConstNodePtr x)
 	{
-		return (x == _nullptr ? BLACK : x->color);
+		return (x == NULL ? BLACK : x->color);
 	};
 
 	static void setColor(NodePtr x, Color c)
 	{
-		if (x != _nullptr)
+		if (x != NULL)
 			x->color = c;
 	};
 
@@ -125,15 +115,15 @@ class RBTree {
 
 	static bool isNullOrBlack(ConstNodePtr x)
 	{
-		return (x == _nullptr || isBlack(x));
+		return (x == NULL || isBlack(x));
 	};
 
 	RBTree(const Compare &c = Compare(), const Alloc &a = Alloc()) :
-		_root(_nullptr), _comp(c), _alloc(a), _size(0) {
+		_root(NULL), _comp(c), _alloc(a), _size(0) {
 		_dummy = _nodeAlloc.allocate(1);
-		_dummy->parent = _nullptr;
-		_dummy->left = _nullptr;
-		_dummy->right = _nullptr;
+		_dummy->parent = NULL;
+		_dummy->left = NULL;
+		_dummy->right = NULL;
 		_dummy->color = BLACK;
 	};
 
@@ -144,9 +134,9 @@ class RBTree {
 
 	NodePtr copy(ConstNodePtr x)
 	{
-		if (x == _nullptr)
+		if (x == NULL)
 		{
-			return _nullptr;
+			return NULL;
 		}
 		NodePtr r = newNode(x);
 		r->left = copy(x->left); setParent(r->left, r);
@@ -169,20 +159,20 @@ class RBTree {
 
 	void setParent(NodePtr child, NodePtr parent)
 	{
-		if (child != _nullptr)
+		if (child != NULL)
 			child->parent = parent;
 	};
 
 	NodePtr leftMost(NodePtr x)
 	{
-		while (x->left != _nullptr)
+		while (x->left != NULL)
 			x = x->left;
 		return x;
 	};
 
 	NodePtr rightMost(NodePtr x)
 	{
-		while (x->right != _nullptr)
+		while (x->right != NULL)
 			x = x->right;
 		return x;
 	};
@@ -196,13 +186,14 @@ class RBTree {
 	{
 		clear(_root);
 		_dummy->left = _dummy->right = _dummy;
-		_root = _nullptr;
+		_nodeAlloc.deallocate(_dummy, 1);
+		_root = NULL;
 		_size = 0;
 	};
 
 	void clear(NodePtr x)
 	{
-		if (x == _nullptr)
+		if (x == NULL)
 			return ;
 		clear(x->left);
 		clear(x->right);
@@ -225,7 +216,7 @@ class RBTree {
 		rp = m->left;
 		m->left = rp->right;
 		rp->right = m;
-		if (m->left != _nullptr)
+		if (m->left != NULL)
 			m->left->parent = m;
 		rp->parent = m->parent;
 		m->parent = rp;
@@ -238,7 +229,7 @@ class RBTree {
 		rp = n->right;
 		n->right = rp->left;
 		rp->left = n;
-		if (n->right != _nullptr)
+		if (n->right != NULL)
 			n->right->parent = n;
 		rp->parent = n->parent;
 		n->parent = rp;
@@ -254,35 +245,35 @@ class RBTree {
 		if (this->isBlack(r->parent))
 			return ;
 
-		NodePtr y = r->parent->parent;
-		NodePtr pr = y->right;
-		NodePtr pl = y->left;
+		NodePtr gramma = r->parent->parent;
+		NodePtr pr = gramma->right;
+		NodePtr pl = gramma->left;
 
-		if (this->isNullOrBlack(pl) && this->isNullOrBlack(pr))
+		if (this->isNullOrBlack(pl) || this->isNullOrBlack(pr))
 		{
 			if (this->isNullOrBlack(pl))
 			{
 				if (pr->left == r)
 					this->rotateRight(pr);
-				this->rotateLeft(y);
+				this->rotateLeft(gramma);
 			}
-			else if (this->isNullOrBlack(pr))
+			else
 			{
 				if (pl->right == r)
 					this->rotateLeft(pl);
-				this->rotateRight(y);
+				this->rotateRight(gramma);
 			}
-			this->setColor(y, RED);
-			this->setColor(y->parent, BLACK);
+			this->setColor(gramma, RED);
+			this->setColor(gramma->parent, BLACK);
 		}
 		else
 		{
 			this->setColor(pl, BLACK);
 			this->setColor(pr, BLACK);
-			if (y != _root)
+			if (gramma != _root)
 			{
-				this->setColor(y, RED);
-				this->adjustInsert(y);
+				this->setColor(gramma, RED);
+				this->adjustInsert(gramma);
 			}
 		}	
 	};
@@ -387,7 +378,7 @@ class RBTree {
 		NodePtr n = _nodeAlloc.allocate(1);
 
 		_alloc.construct(&n->value, e);
-		n->left = n->right = _nullptr;
+		n->left = n->right = NULL;
 		n->parent = p;
 		setColor(n, RED);
 		return n;
@@ -419,7 +410,7 @@ class RBTree {
 		{
 			_dummy->right = getNode(--iterator(i));
 		}
-		if (p->left != _nullptr && p->right != _nullptr)
+		if (p->left != NULL && p->right != NULL)
 		{
 			changeNodes(p, rightMost(p->left));
 		}
@@ -427,7 +418,7 @@ class RBTree {
 		--_size;
 	}
 
-	NodePtr getPrevious(NodePtr p)
+	NodePtr getPrevious(NodePtr p) const
 	{
 		return rightMost(p->left);
 	}
@@ -444,6 +435,7 @@ class RBTree {
 			x->left->parent = x;
 		}
 		y->right = x->right;
+		y->right->parent = y;
 		if (xl != y)
 		{
 			yp->right = x;
@@ -455,7 +447,7 @@ class RBTree {
 		}
 		y->left = xl;
 		xl->parent = y;
-		x->right = _nullptr;
+		x->right = NULL;
 		Color c = getColor(x);
 		setColor(x, getColor(y));
 		setColor(y, c);
@@ -466,7 +458,7 @@ class RBTree {
 		if (isRed(r) || size() == 1)
 		{
 			deleteNode(r);
-			r = _nullptr;
+			r = NULL;
 			return ;
 		}
 		if (!isNullOrBlack(r->right) || !isNullOrBlack(r->left))
@@ -488,8 +480,8 @@ class RBTree {
 		{
 			NodePtr parent = r->parent;
 			deleteNode(r);
-			r = _nullptr;
-			rebalance(parent, _nullptr);
+			r = NULL;
+			rebalance(parent, NULL);
 		}
 	};
 
@@ -581,21 +573,21 @@ class RBTree {
 
 	void printOn(std::ostream &o, ConstNodePtr r, int i)
 	{
-		if (r == _nullptr)
+		if (r == NULL)
 		{
 			return;
 		}
 		printOn(o, r->left, i + 1);
 		for (int j = 0; j < i; j++)
 		{
-			o << " ";
+			o << "\t";
 		}
 		if (isRed(r))
 		{
 			o << "\033[1m\033[31m";
 		}
 		else o << "\033[1m\033[30m";
-		o << " " << r->value.first << "\033[0m" << std::endl;
+		o << r->value.first << "\033[0m" << std::endl;
 		printOn(o, r->right, i + 1);
 	};
 
@@ -619,7 +611,7 @@ class RBTree {
 
 	void printHelper(NodePtr root, std::string indent, bool test)
 	{
-		if (root != _nullptr)
+		if (root != NULL)
 		{
 			std::cout << indent;
 			if (test)
@@ -632,12 +624,13 @@ class RBTree {
 				std::cout << "----";
 				indent += "|    ";
 			}
-		}
-		std::string sColor = isRed(root) ? "RED" : "BLACK";
-		std::cout << root->value.first << "(" << sColor << ")" << std::endl;
+		
+		std::string sColor = isRed(root) ? "\033[1m\033[31m" : "\033[1m\033[30m";
+		std::cout << sColor << root->value.first << "\033[0m" << std::endl;
 		printHelper(root->left, indent, false);
 		printHelper(root->right, indent, true);
-	}
+		}
+	};
 
 }; // RBTree
 

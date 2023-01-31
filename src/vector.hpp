@@ -10,7 +10,6 @@
 #include "iterator_traits.hpp"
 #include "Container.hpp"
 
-
 namespace ft {
 #define CONTAINER Container<T, Allocator>
 	template<class T, class Allocator = std::allocator<T> >
