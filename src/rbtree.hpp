@@ -298,12 +298,12 @@ class RBTree {
 	NodePtr getNode(iterator i)
 	{
 		return i._ptr;
-	}
+	};
 
 	iterator getIterator(NodePtr p)
 	{
 		return iterator(p);
-	}
+	};
 
 	template<bool MULTI>
 	pair<iterator, bool> insertNode(const Value &e) {
@@ -371,7 +371,7 @@ class RBTree {
 	const Key &key(const Value &e)
 	{
 		return _keyOfValue(e);
-	}
+	};
 
 	NodePtr newNode(NodePtr p, const Value &e)
 	{
@@ -416,12 +416,12 @@ class RBTree {
 		}
 		eraseInLeaf(getRefNode(p));
 		--_size;
-	}
+	};
 
 	NodePtr getPrevious(NodePtr p) const
 	{
 		return rightMost(p->left);
-	}
+	};
 
 	void changeNodes(NodePtr x, NodePtr y)
 	{
@@ -594,12 +594,12 @@ class RBTree {
 	size_t size(void) const
 	{
 		return _size;
-	}
+	};
 
 	void printOn(std::ostream &o)
 	{
 		printOn(o, _root, 1);
-	}
+	};
 
 	void prettyPrint()
 	{

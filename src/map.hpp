@@ -11,7 +11,7 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 		typedef map<K, T, Compare, Alloc>				self_type;
 		typedef K										key_type;
 		typedef T										mapped_type;
-		typedef ft::pair<key_type, mapped_type>			value_type;
+		typedef ft::pair<K, T>							value_type;
 		typedef Compare									key_compare;
 		typedef ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare, Alloc> Tree_struct;
 		Tree_struct _tree;
@@ -26,6 +26,27 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 		typedef typename Tree_struct::allocator_type	allocator_type;
 		typedef typename Tree_struct::size_type			size_type;
 		typedef typename Tree_struct::difference_type	difference_type;
+		typedef typename ft::reverse_iterator<iterator> reverse_iterator;
+		typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
+
+	public:
+		class value_compare : std::binary_function<value_type, value_type, bool>
+		{
+			friend class map;
+
+			protected:
+				Compare comp;
+				value_compare (Compare c) : comp(c) {};
+
+			public:
+				typedef bool result_type;
+				typedef value_type first_argument_type;
+				typedef value_type second_argument_type;
+				bool operator()(const value_type &x, const value_type &y) const
+				{
+					return comp(x.first, y.first);
+				}
+		};
 
 	map(const Compare &c = Compare(), const Alloc &a = Alloc()) : _tree(c, a) {};
 
@@ -33,8 +54,8 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 		return _tree.insertUni(val);
 	};
 
-	mapped_type &operator[](const key_type& k) {
-		return insert(value_type(k, mapped_type())).first->second;
+	T &operator[](const K& key) {
+		return insert(value_type(key, mapped_type())).first->value.second;
 	}; // F
 
 }; // map
