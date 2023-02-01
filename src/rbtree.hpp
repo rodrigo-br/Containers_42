@@ -8,6 +8,7 @@
 #include "functional.hpp"
 #include "functionalExt.hpp"
 #include <cstddef>
+#include <utility>
 #include "utility.hpp"
 #include "type_traits.hpp"
 #include "Container.hpp"
@@ -636,6 +637,34 @@ class RBTree {
 		printHelper(root->right, indent, true);
 		}
 	};
+
+	void swap(RBTree &x)
+	{
+		if (this == &x)
+			return;
+		if (_alloc == x._alloc)
+		{
+			std::swap(_root, x._root);
+			std::swap(_comp, x._comp);
+			std::swap(_alloc, x._alloc);
+			std::swap(_size, x._size);
+			std::swap(_dummy, x._dummy);
+			std::swap(_nodeAlloc, x._nodeAlloc);
+			std::swap(_keyOfValue, x._keyOfValue);
+		}
+		else
+		{
+			std::swap(*this, x);
+		}
+	};
+
+	// NodePtr			_root;
+	// Compare			_comp;
+	// allocator_type	_alloc;
+	// size_type		_size;
+	// NodePtr			_dummy;
+	// NodeAllocator	_nodeAlloc;
+	// KeyOfValue		_keyOfValue;
 
 }; // RBTree
 

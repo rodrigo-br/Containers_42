@@ -83,14 +83,19 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 		return _tree.size();
 	};
 
+	void clear()
+	{
+		_tree.clear();
+	};
+
 	// size_type max_size() const
 	// {
 	// 	return _tree._alloc.max_size();
 	// };
 
-	void clear()
+	void swap( map& other )
 	{
-		_tree.clear();
+		_tree.swap(other._tree);
 	};
 
 }; // map
