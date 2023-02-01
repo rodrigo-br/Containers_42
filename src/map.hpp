@@ -72,6 +72,11 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 		return _tree.empty();
 	};
 
+	size_type size() const
+	{
+		return _tree.size();
+	};
+
 }; // map
 
 }; // namespace ft
