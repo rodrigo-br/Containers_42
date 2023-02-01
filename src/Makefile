@@ -9,6 +9,7 @@ OBJS	=	$(SRCS:.cpp=.o)
 NAME	=	containers
 
 CC 		=	c++
+
 CFLAGS	=	-g3 -Wall -Wextra -Werror -Wshadow -std=c++98
 
 TEST_FLAG = -r compact

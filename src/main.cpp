@@ -19,7 +19,7 @@ struct Word {
 
 std::ostream &operator<<(std::ostream &os, const Word &w) {
 	return os << w.word << " " << w.count;
-}
+};
 
 /*
 	This main only aims to test the compilation with the version c++98

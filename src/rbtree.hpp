@@ -80,8 +80,12 @@ class RBTree {
 		typedef			size_t											size_type;
 		typedef			ptrdiff_t										difference_type;
 		typedef			Alloc											allocator_type;
-		typedef			ft::bidirectional_iterator<NodePtr>				iterator;
-		typedef			ft::bidirectional_iterator<ConstNodePtr>		const_iterator;
+		template<class NPTR, class PTR, class REF> class IT;
+		template<class NPTR, class PTR, class REF> friend class IT;
+		typedef			IT<NodePtr, pointer, reference>						iterator;
+		typedef			IT<ConstNodePtr, const_pointer, const_reference>	const_iterator;
+		// typedef			ft::bidirectional_iterator<NodePtr>				iterator;
+		// typedef			ft::bidirectional_iterator<ConstNodePtr>		const_iterator;
 		typedef			ft::reverse_iterator<iterator>					reverse_iterator;
 		typedef			ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
@@ -303,7 +307,7 @@ class RBTree {
 
 	NodePtr getNode(iterator i)
 	{
-		return i._ptr;
+		return i.current;
 	};
 
 	iterator getIterator(NodePtr p)
@@ -658,27 +662,129 @@ class RBTree {
 		}
 	};
 
-	// iterator end()
-	// {
-	// 	return iterator(_dummy);
-	// };
+	iterator end()
+	{
+		return iterator(_dummy);
+	};
 
-	// const_iterator end() const
-	// {
-	// 	return const_iterator(_dummy);
-	// };
+	const_iterator end() const
+	{
+		return const_iterator(_dummy);
+	};
 
-	// iterator begin()
-	// {
-	// 	return iterator(_root);
-	// };
+	iterator begin()
+	{
+		return iterator(leftMost(_root));
+	};
 
-	// const_iterator begin() const
-	// {
-	// 	return const_iterator(_root);
-	// };
+	const_iterator begin() const
+	{
+		return const_iterator(leftMost(_root));
+	};
+
+	reverse_iterator rbegin()
+	{
+		return reverse_iterator(end());
+	};
+
+	const_reverse_iterator rbegin() const
+	{
+		return const_reverse_iterator(end());
+	};
+
+	reverse_iterator rend()
+	{
+		return reverse_iterator(begin());
+	};
+
+	const_reverse_iterator rend() const
+	{
+		return const_reverse_iterator(begin());
+	};
 
 }; // RBTree
+
+template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
+template <class NodePtr, class PTR, class REF>
+class RBTree<Key, Value, KeyOfValue, Compare, Alloc>::IT : public ft::iterator<ft::bidirectional_iterator_tag,
+Key, typename Alloc::difference_type, PTR, REF>
+{
+	friend RBTree<Key, Value, KeyOfValue, Compare, Alloc>;
+	friend RBTree<Key, Value, KeyOfValue, Compare, Alloc>::const_iterator;
+
+	NodePtr current;
+	void inc()
+	{
+		if (current->right == NULL)
+		{
+			NodePtr ptr = current;
+			while ((current = current->parent)->right == ptr)
+			{
+				ptr = current;
+			}
+		}
+		else
+		{
+			current = leftMost(current->right);
+		}
+	};
+
+	NodePtr rightMost(NodePtr x)
+	{
+		while (x->right != NULL)
+		{
+			x = x->right;
+		}
+		return x;
+	};
+
+	void dec()
+	{
+		if (current->left == NULL)
+		{
+			NodePtr ptr = current;
+			while ((current = current->parent)->left == ptr)
+			{
+				ptr = current;
+			}
+		}
+		else
+		{
+			if (current->parent == current)
+			{
+				current = current->right;
+			}
+			else
+			{
+				current = rightMost(current->left);
+			}
+		}
+	};
+
+	NodePtr leftMost(NodePtr x)
+	{
+		while (x->left != NULL)
+		{
+			x = x->left;
+		}
+		return x;
+	};
+
+	IT(NodePtr x) : current(x) {};
+
+	public:
+		IT() {};
+		template<class NP, class P, class R>
+		IT(IT<NP, P, R> i) : current(i.current) {};
+		IT &operator++() { inc(); return *this; };
+		IT &operator--() { dec(); return *this; };
+		IT operator++(int) { IT i(*this); inc(); return i; };
+		IT operator--(int) { IT i(*this); dec(); return i; };
+		REF operator*() const { return current->value; };
+		PTR operator->() const { return &(operator*()); };
+		bool operator==(IT &x) const { return current == x.current; };
+		bool operator!=(IT &x) const { return !(*this == x); };
+};// IT
 
 }; // namespace ft
 #endif

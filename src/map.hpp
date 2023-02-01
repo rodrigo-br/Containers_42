@@ -67,7 +67,7 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 
 	T &operator[](const K& key)
 	{
-		return insert(value_type(key, mapped_type())).first->value.second;
+		return insert(value_type(key, mapped_type())).first->second;
 	};
 
 	allocator_type get_allocator() const
@@ -93,6 +93,46 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 	void swap(map& other)
 	{
 		_tree.swap(other._tree);
+	};
+
+	iterator begin()
+	{
+		return _tree.begin();
+	};
+
+	const_iterator begin() const
+	{
+		return _tree.begin();
+	};
+
+	iterator end()
+	{
+		return _tree.end();
+	};
+
+	const_iterator end() const
+	{
+		return _tree.end();
+	};
+
+	reverse_iterator rbegin()
+	{
+		return _tree.rbegin();
+	};
+
+	const_reverse_iterator rbegin() const
+	{
+		return _tree.rbegin();
+	};
+
+	reverse_iterator rend()
+	{
+		return _tree.rend();
+	};
+
+	const_reverse_iterator rend() const
+	{
+		return _tree.rend();
 	};
 
 	// key_compare key_comp() const
