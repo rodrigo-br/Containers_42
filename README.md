@@ -6,8 +6,6 @@ In this project, i implement the following container types of the C++ standard t
 
 - [map](https://cplusplus.com/reference/map/map/)
 
-- [stack](https://cplusplus.com/reference/stack/stack/)
-
 
 Also:
 
