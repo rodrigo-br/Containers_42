@@ -30,6 +30,8 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 		typedef typename ft::reverse_iterator<iterator> reverse_iterator;
 		typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
+		allocator_type _alloc;
+
 	public:
 		class value_compare : std::binary_function<value_type, value_type, bool>
 		{
@@ -88,15 +90,22 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 		_tree.clear();
 	};
 
-	// size_type max_size() const
-	// {
-	// 	return _tree._alloc.max_size();
-	// };
-
-	void swap( map& other )
+	void swap(map& other)
 	{
 		_tree.swap(other._tree);
 	};
+
+	// key_compare key_comp() const
+	// {
+	// 	return key_compare();
+	// };
+
+	// value_compare value_comp() const
+	// {
+	// 	return value_compare();
+	// };
+
+
 
 }; // map
 

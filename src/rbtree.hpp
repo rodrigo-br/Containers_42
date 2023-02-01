@@ -658,13 +658,25 @@ class RBTree {
 		}
 	};
 
-	// NodePtr			_root;
-	// Compare			_comp;
-	// allocator_type	_alloc;
-	// size_type		_size;
-	// NodePtr			_dummy;
-	// NodeAllocator	_nodeAlloc;
-	// KeyOfValue		_keyOfValue;
+	// iterator end()
+	// {
+	// 	return iterator(_dummy);
+	// };
+
+	// const_iterator end() const
+	// {
+	// 	return const_iterator(_dummy);
+	// };
+
+	// iterator begin()
+	// {
+	// 	return iterator(_root);
+	// };
+
+	// const_iterator begin() const
+	// {
+	// 	return const_iterator(_root);
+	// };
 
 }; // RBTree
 
