@@ -55,6 +55,26 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 
 	map(const Compare &c, const Alloc &a = Alloc()) : _tree(c, a) {};
 
+	template< class InputIt >
+	map( InputIt first, InputIt last,
+    const Compare& comp = Compare(),
+    const Alloc& alloc = Alloc() ) : _tree(comp, alloc)
+	{
+		while (first != last)
+		{
+			insert(*first);
+			first++;
+		}
+	};
+
+	map(const map &other) : _tree(other._tree) {};
+
+	map &operator=(const map &other)
+	{
+		_tree = other._tree;
+		return *this;
+	};
+
 	~map()
 	{
 		clear();
@@ -68,6 +88,51 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 	T &operator[](const K& key)
 	{
 		return insert(value_type(key, mapped_type())).first->second;
+	};
+
+	T& at(const K& key)
+	{
+		iterator it = find(key);
+		return it->second;
+	};
+
+	iterator erase(iterator pos)
+	{
+		iterator result = pos;
+		_tree.erase(pos);
+		return result;
+	};
+
+	iterator erase(iterator first, iterator last)
+	{
+		iterator result = first;
+		while (first != last)
+		{
+			_tree.erase(first);
+			first++;
+		}
+		return result;
+	};
+
+	size_type erase(const K& key)
+	{
+		return _tree.erase_key(key);
+	};
+
+	const T& at(const K& key) const
+	{
+		const_iterator it = find(key);
+		return it->second;
+	};
+
+	iterator find(const K& key)
+	{
+		return _tree.find(key);
+	};
+
+	const_iterator find(const K& key) const
+	{
+		return _tree.find(key);
 	};
 
 	allocator_type get_allocator() const
@@ -93,6 +158,11 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 	void swap(map& other)
 	{
 		_tree.swap(other._tree);
+	};
+
+	size_type count(const K& key) const
+	{
+		return _tree.count(key);
 	};
 
 	iterator begin()
@@ -145,9 +215,93 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 		return value_compare(key_comp());
 	};
 
+	size_type max_size() const
+	{
+		return std::numeric_limits<std::size_t>::max();
+	};
 
+	ft::pair<iterator,iterator>
+	equal_range(const K& key)
+	{
+		return _tree.equal_range(key);
+	};
+
+	ft::pair<const_iterator,const_iterator>
+	equal_range(const K& key) const
+	{
+		return _tree.equal_range(key);
+	};
+
+	iterator lower_bound(const K& key)
+	{
+		return _tree.lower_bound(key);
+	};
+
+	const_iterator lower_bound(const K& key) const
+	{
+		return _tree.lower_bound(key);
+	};
+
+	iterator upper_bound(const K& key)
+	{
+		return _tree.upper_bound(key);
+	};
+
+	const_iterator upper_bound(const K& key) const
+	{
+		return _tree.upper_bound(key);
+	};
 
 }; // map
+
+template< class Key, class T, class Compare, class Alloc >
+void swap(ft::map<Key,T,Compare,Alloc>& lhs,
+           ft::map<Key,T,Compare,Alloc>& rhs)
+{
+	lhs.swap(rhs);
+};
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator==( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs )
+{
+	return lhs._tree == rhs._tree;
+};
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs )
+{
+	return lhs._tree != rhs._tree;
+};
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator<( const ft::map<Key,T,Compare,Alloc>& lhs,
+                const ft::map<Key,T,Compare,Alloc>& rhs )
+{
+	return lhs._tree < rhs._tree;
+};
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator<=( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs )
+{
+	return lhs._tree <= rhs._tree;
+};
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator>( const ft::map<Key,T,Compare,Alloc>& lhs,
+                const ft::map<Key,T,Compare,Alloc>& rhs )
+{
+	return lhs._tree > rhs._tree;
+};
+
+template< class Key, class T, class Compare, class Alloc >
+bool operator>=( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs )
+{
+	return lhs._tree >= rhs._tree;
+};
 
 }; // namespace ft
 

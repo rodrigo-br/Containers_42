@@ -84,8 +84,6 @@ class RBTree {
 		template<class NPTR, class PTR, class REF> friend class IT;
 		typedef			IT<NodePtr, pointer, reference>						iterator;
 		typedef			IT<ConstNodePtr, const_pointer, const_reference>	const_iterator;
-		// typedef			ft::bidirectional_iterator<NodePtr>				iterator;
-		// typedef			ft::bidirectional_iterator<ConstNodePtr>		const_iterator;
 		typedef			ft::reverse_iterator<iterator>					reverse_iterator;
 		typedef			ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
@@ -134,6 +132,11 @@ class RBTree {
 
 	RBTree(const RBTree &x) :
 		_root(x._root), _comp(x._comp), _alloc(x._alloc) {
+		_dummy = _nodeAlloc.allocate(1);
+		_dummy->parent = NULL;
+		_dummy->left = NULL;
+		_dummy->right = NULL;
+		_dummy->color = BLACK;
 		this->copy(x);
 	};
 
@@ -175,6 +178,17 @@ class RBTree {
 
 	NodePtr leftMost(NodePtr x)
 	{
+		if (x == NULL)
+			return NULL;
+		while (x->left != NULL)
+			x = x->left;
+		return x;
+	};
+
+	ConstNodePtr leftMost(ConstNodePtr x) const
+	{
+		if (x == NULL)
+			return NULL;
 		while (x->left != NULL)
 			x = x->left;
 		return x;
@@ -182,6 +196,17 @@ class RBTree {
 
 	NodePtr rightMost(NodePtr x)
 	{
+		if (x == NULL)
+			return NULL;
+		while (x->right != NULL)
+			x = x->right;
+		return x;
+	};
+
+	ConstNodePtr rightMost(ConstNodePtr x) const
+	{
+		if (x == NULL)
+			return NULL;
 		while (x->right != NULL)
 			x = x->right;
 		return x;
@@ -405,8 +430,21 @@ class RBTree {
 
 	void deleteNode(NodePtr n)
 	{
-		_alloc.destroy(&n->value);
-		_nodeAlloc.deallocate(n, 1);
+		if (n != NULL)
+		{
+			_alloc.destroy(&n->value);
+			_nodeAlloc.deallocate(n, 1);
+		}
+	};
+
+	size_type erase_key(const Key &k)
+	{
+		if (count(k))
+		{
+			erase(find(k));
+			return 1;
+		}
+		return 0;
 	};
 
 	void erase(iterator i)
@@ -462,6 +500,8 @@ class RBTree {
 		setColor(x, getColor(y));
 		setColor(y, c);
 	};
+
+	
 
 	void eraseInLeaf(NodePtr &r)
 	{
@@ -664,22 +704,22 @@ class RBTree {
 
 	iterator end()
 	{
-		return iterator(_dummy);
+		return _dummy;
 	};
 
 	const_iterator end() const
 	{
-		return const_iterator(_dummy);
+		return _dummy;
 	};
 
 	iterator begin()
 	{
-		return iterator(leftMost(_root));
+		return _dummy->left;
 	};
 
 	const_iterator begin() const
 	{
-		return const_iterator(leftMost(_root));
+		return _dummy->left;
 	};
 
 	reverse_iterator rbegin()
@@ -707,6 +747,150 @@ class RBTree {
 		return _comp;
 	};
 
+	iterator find(const Key &k)
+	{
+		NodePtr ptr = _root;
+		while (ptr != NULL)
+		{
+			if (_comp(k, _keyOfValue(ptr->value)))
+			{
+				ptr = ptr->left;
+			}
+			else if (_comp(_keyOfValue(ptr->value), k))
+			{
+				ptr = ptr->right;
+			}
+			else
+			{
+				return ptr;
+			}
+		}
+		return end();
+	};
+
+	size_type count(const Key &k) const
+	{
+		NodePtr ptr = _root;
+		while (ptr != NULL)
+		{
+			if (_comp(k, _keyOfValue(ptr->value)))
+			{
+				ptr = ptr->left;
+			}
+			else if (_comp(_keyOfValue(ptr->value), k))
+			{
+				ptr = ptr->right;
+			}
+			else
+			{
+				return 1;
+			}
+		}
+		return 0;
+	};
+
+	ft::pair<iterator, iterator> equal_range(const Key &k)
+	{
+		return ft::pair<iterator, iterator>(lower_bound(k), upper_bound(k));
+	};
+
+	ft::pair<const_iterator, const_iterator> equal_range(const Key &k) const
+	{
+		return ft::pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k));
+	};
+
+	iterator lower_bound(const Key &k)
+	{
+		NodePtr ptr = _root;
+		NodePtr res = NULL;
+		while (ptr != NULL)
+		{
+			if (_comp(k, _keyOfValue(ptr->value)))
+			{
+				res = ptr;
+				ptr = ptr->left;
+			}
+			else if (_comp(_keyOfValue(ptr->value), k))
+			{
+				ptr = ptr->right;
+			}
+			else
+			{
+				return ptr;
+			}
+		}
+		return res;
+	};
+
+	const iterator lower_bound(const Key &k) const
+	{
+		NodePtr ptr = _root;
+		NodePtr res = NULL;
+		while (ptr != NULL)
+		{
+			if (_comp(k, _keyOfValue(ptr->value)))
+			{
+				res = ptr;
+				ptr = ptr->left;
+			}
+			else if (_comp(_keyOfValue(ptr->value), k))
+			{
+				ptr = ptr->right;
+			}
+			else
+			{
+				return ptr;
+			}
+		}
+		return res;
+	};
+
+	iterator upper_bound(const Key &k)
+	{
+		NodePtr ptr = _root;
+		NodePtr res = NULL;
+		while (ptr != NULL)
+		{
+			if (_comp(k, _keyOfValue(ptr->value)))
+			{
+				res = ptr;
+				ptr = ptr->left;
+			}
+			else if (_comp(_keyOfValue(ptr->value), k))
+			{
+				ptr = ptr->right;
+			}
+			else
+			{
+				return ptr->right;
+			}
+		}
+		return res;
+	};
+
+	const iterator upper_bound(const Key &k) const
+	{
+		NodePtr ptr = _root;
+		NodePtr res = NULL;
+		while (ptr != NULL)
+		{
+			if (_comp(k, _keyOfValue(ptr->value)))
+			{
+				res = ptr;
+				ptr = ptr->left;
+			}
+			else if (_comp(_keyOfValue(ptr->value), k))
+			{
+				ptr = ptr->right;
+			}
+			else
+			{
+				return ptr->right;
+			}
+		}
+		return res;
+	};
+
 }; // RBTree
 
 template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
@@ -717,10 +901,12 @@ Key, typename Alloc::difference_type, PTR, REF>
 	friend RBTree<Key, Value, KeyOfValue, Compare, Alloc>;
 	friend RBTree<Key, Value, KeyOfValue, Compare, Alloc>::const_iterator;
 
+	public:
 	NodePtr current;
+	private:
 	void inc()
 	{
-		if (current->right == NULL)
+		if (current && current->right == NULL)
 		{
 			NodePtr ptr = current;
 			while ((current = current->parent)->right == ptr)
@@ -790,6 +976,43 @@ Key, typename Alloc::difference_type, PTR, REF>
 		bool operator==(IT &x) const { return current == x.current; };
 		bool operator!=(IT &x) const { return !(*this == x); };
 };// IT
+
+template <typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+bool operator==(const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &x, const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &y)
+{
+	return (x.size() == y.size());
+};
+
+template <typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+bool operator!=(const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &x, const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &y)
+{
+	return (!(x == y));
+};
+
+template <typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+bool operator<(const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &x, const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &y)
+{
+	return (x.size() < y.size());
+};
+
+template <typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+bool operator>(const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &x, const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &y)
+{
+	return (y < x);
+};
+
+template <typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+bool operator>=(const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &x, const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &y)
+{
+	return (!(x < y));
+};
+
+template <typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+bool operator<=(const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &x, const RBTree<Key, Value, KeyOfValue, Compare, Alloc> &y)
+{
+	return (!(y < x));
+};
+
 
 }; // namespace ft
 #endif
