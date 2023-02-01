@@ -36,4 +36,5 @@ int main(void)
 	map._tree.printOn(std::cout);
 
 	std::cout << map[3] << std::endl;
+	map.clear();
 }

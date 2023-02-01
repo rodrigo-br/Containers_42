@@ -1,6 +1,7 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
+#include <limits>
 #include "rbtree.hpp"
 
 namespace ft {
@@ -52,6 +53,11 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 
 	map(const Compare &c, const Alloc &a = Alloc()) : _tree(c, a) {};
 
+	// ~map()
+	// {
+	// 	clear();
+	// };
+
 	pair<iterator, bool> insert(const value_type& val)
 	{
 		return _tree.insertUni(val);
@@ -75,6 +81,16 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 	size_type size() const
 	{
 		return _tree.size();
+	};
+
+	// size_type max_size() const
+	// {
+	// 	return _tree._alloc.max_size();
+	// };
+
+	void clear()
+	{
+		_tree.clear();
 	};
 
 }; // map

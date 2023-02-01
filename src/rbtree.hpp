@@ -185,13 +185,13 @@ class RBTree {
 	~RBTree()
 	{
 		this->clear();
+		_nodeAlloc.deallocate(_dummy, 1);
 	};
 
 	void clear()
 	{
 		clear(_root);
 		_dummy->left = _dummy->right = _dummy;
-		_nodeAlloc.deallocate(_dummy, 1);
 		_root = NULL;
 		_size = 0;
 	};
