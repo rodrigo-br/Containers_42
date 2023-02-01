@@ -144,6 +144,11 @@ class RBTree {
 		return r;
 	};
 
+	bool empty() const
+	{
+		return (_size == 0);
+	};
+
 	void copy(const RBTree &x)
 	{
 		if (x.empty())

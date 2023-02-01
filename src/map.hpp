@@ -48,15 +48,29 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 				}
 		};
 
-	map(const Compare &c = Compare(), const Alloc &a = Alloc()) : _tree(c, a) {};
+	map() : _tree(Compare(), Alloc()) {};
 
-	pair<iterator, bool> insert(const value_type& val) {
+	map(const Compare &c, const Alloc &a = Alloc()) : _tree(c, a) {};
+
+	pair<iterator, bool> insert(const value_type& val)
+	{
 		return _tree.insertUni(val);
 	};
 
-	T &operator[](const K& key) {
+	T &operator[](const K& key)
+	{
 		return insert(value_type(key, mapped_type())).first->value.second;
-	}; // F
+	};
+
+	allocator_type get_allocator() const
+	{
+		return _tree._alloc;
+	};
+
+	bool empty() const
+	{
+		return _tree.empty();
+	};
 
 }; // map
 

@@ -32,7 +32,8 @@ int main(void)
 	(void)map;
 	map.insert(ft::make_pair<int, std::string>(1, "one"));
 	map.insert(ft::make_pair<int, std::string>(2, "two"));
-	// map._tree.printOn(std::cout);
 	map[3] = "tree";
 	map._tree.printOn(std::cout);
+
+	std::cout << map[3] << std::endl;
 }
