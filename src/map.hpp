@@ -53,10 +53,10 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 
 	map(const Compare &c, const Alloc &a = Alloc()) : _tree(c, a) {};
 
-	// ~map()
-	// {
-	// 	clear();
-	// };
+	~map()
+	{
+		clear();
+	};
 
 	pair<iterator, bool> insert(const value_type& val)
 	{
