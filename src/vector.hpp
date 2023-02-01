@@ -9,6 +9,7 @@
 #include "type_traits.hpp"
 #include "iterator_traits.hpp"
 #include "Container.hpp"
+#include "algorithm.hpp"
 
 namespace ft {
 #define CONTAINER Container<T, Allocator>
@@ -418,17 +419,17 @@ namespace ft {
 
 		template<class T>
 		bool operator==(const vector<T>& lhs, const vector<T>& rhs) {
-			return equal(lhs.begin(), lhs.end(), rhs.begin());
+			return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
 		};
 
 		template<class T>
 		bool operator!=(const vector<T>& lhs, const vector<T>& rhs) {
-			return !equal(lhs.begin(), lhs.end(), rhs.begin());
+			return !ft::equal(lhs.begin(), lhs.end(), rhs.begin());
 		};
 
 		template<class T>
 		bool operator<(const vector<T>& lhs, const vector<T>& rhs) {
-			return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 		};
 
 		template<class T>

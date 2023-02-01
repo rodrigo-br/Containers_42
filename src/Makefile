@@ -39,8 +39,6 @@ $(TEST):
 		c++ -c ../tests/main_t.cpp $< -o $(TEST)
 
 test:	$(TEST)
-		$(CC) $(CFLAGS) main.cpp && ./a.out && rm ./a.out
-		@echo 
 		$(CC) -g3 $(TEST_SRC) $(TEST) -o ../tests/capivarinha
 		@echo
 		valgrind --leak-check=full --show-leak-kinds=all --log-file="leaks.txt" ../tests/capivarinha ${TEST_FLAG}
