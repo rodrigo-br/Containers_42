@@ -135,15 +135,15 @@ class map : public ft::RBTree<K, ft::pair<K, T>, ft::FirstOfPair<K, T>, Compare,
 		return _tree.rend();
 	};
 
-	// key_compare key_comp() const
-	// {
-	// 	return key_compare();
-	// };
+	key_compare key_comp() const
+	{
+		return _tree.key_comp();
+	};
 
-	// value_compare value_comp() const
-	// {
-	// 	return value_compare();
-	// };
+	value_compare value_comp() const
+	{
+		return value_compare(key_comp());
+	};
 
 
 

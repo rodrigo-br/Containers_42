@@ -702,6 +702,11 @@ class RBTree {
 		return const_reverse_iterator(begin());
 	};
 
+	Compare key_comp() const
+	{
+		return _comp;
+	};
+
 }; // RBTree
 
 template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
