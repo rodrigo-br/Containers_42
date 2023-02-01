@@ -35,4 +35,8 @@
 leaks.txt
 ./vscode/
 *vscode/
-*capivarinha
+capivarinha
+../tests/capivarinha
+tests/capivarinha
+containers
+tests/capivarinha

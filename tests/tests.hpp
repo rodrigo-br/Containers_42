@@ -8,6 +8,7 @@
 #include "../src/type_traits.hpp"
 #include "../src/algorithm.hpp"
 #include "../src/utility.hpp"
+#include "../src/map.hpp"
 #include "../src/bidirectional_iterator.hpp"
 #include <vector>
 #include <map>
