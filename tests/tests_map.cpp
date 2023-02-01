@@ -76,6 +76,40 @@ TEST_CASE ("Swap MAP")
 	REQUIRE(map2[3] == "tree");
 }
 
+TEST_CASE ("Begin and End MAP")
+{
+	ft::map<int, std::string> map;
+	map.insert(ft::make_pair<int, std::string>(1, "one"));
+	map.insert(ft::make_pair<int, std::string>(2, "two"));
+	map.insert(ft::make_pair<int, std::string>(3, "tree"));
+
+	std::map<int, std::string> map2;
+	map2.insert(std::make_pair<int, std::string>(1, "one"));
+	map2.insert(std::make_pair<int, std::string>(2, "two"));
+	map2.insert(std::make_pair<int, std::string>(3, "tree"));
+
+	ft::map<int, std::string>::iterator it = map.begin();
+	ft::map<int, std::string>::iterator ite = map.end();
+	std::map<int, std::string>::iterator it2 = map2.begin();
+	std::map<int, std::string>::iterator ite2 = map2.end();
+
+	while (it != ite)
+	{
+		REQUIRE(it->first == it2->first);
+		REQUIRE(it->second == it2->second);
+		it++;
+		it2++;
+	}
+}
+
+// TEST_CASE ("Count MAP")
+// {
+// 	ft::map<int, std::string> map;
+// 	map.insert(ft::make_pair<int, std::string>(1, "one"));
+// 	REQUIRE(map.count(1) == 1);
+// 	REQUIRE(map.count(2) == 0);
+// }
+
 // TEST_CASE ("Max_size MAP") // WORNG VALUE
 // {
 // 	ft::map<int, std::string> map;
