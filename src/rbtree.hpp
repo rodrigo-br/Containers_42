@@ -898,9 +898,8 @@ template <class NodePtr, class PTR, class REF>
 class RBTree<Key, Value, KeyOfValue, Compare, Alloc>::IT : public ft::iterator<ft::bidirectional_iterator_tag,
 Key, typename Alloc::difference_type, PTR, REF>
 {
-	friend RBTree<Key, Value, KeyOfValue, Compare, Alloc>;
-	friend RBTree<Key, Value, KeyOfValue, Compare, Alloc>::const_iterator;
-
+	friend class RBTree<Key, Value, KeyOfValue, Compare, Alloc>;
+	
 	public:
 	NodePtr current;
 	private:
